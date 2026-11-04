@@ -81,7 +81,22 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .sales-ledger-panel #ledgerSoldFields[hidden]{display:none}
 .sales-ledger-panel #ledgerSoldFields{grid-column:1/-1}
 @media(max-width:480px){.sales-summary{grid-template-columns:1fr 1fr}}
-</style></head><body><header><h1>Export Scout <small>v5.2</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+
+.sales-rankings-panel{padding:12px;margin-top:14px;border:1px solid #cdddf1;background:#f7faff;border-radius:12px}
+.sales-ranking-controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:10px 0}
+.sales-ranking-controls>div{flex:1;min-width:160px}
+.sales-ranking-controls label.checkline{margin:0 0 8px;flex:1;min-width:170px;font-size:13px}
+.sales-ranking-card{border-top:1px solid #d4e2f2;padding:12px 0}
+.sales-ranking-card>strong{display:block;color:#174573}
+.sales-ranking-card p{margin:6px 0}
+.sales-ranking-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:9px 0}
+.sales-ranking-metrics>div{background:#fff;border:1px solid #d6e4f1;padding:7px;border-radius:8px;min-width:0}
+.sales-ranking-metrics small{display:block;font-size:11px;color:#526b84}
+.sales-ranking-metrics b{display:block;font-size:14px;overflow-wrap:anywhere}
+.migration-backup-panel{margin-top:14px;border-top:1px solid #d5e1f1}
+.migration-backup-panel .note{overflow-wrap:anywhere}
+@media(max-width:420px){.sales-ranking-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head><body><header><h1>Export Scout <small>v5.3</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>商品発掘｜定番候補＋海外トレンド</h2>
@@ -148,11 +163,29 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 <div class="buttons"><button id="ledgerSave" type="button">仕入れ・販売記録を保存</button><button id="ledgerNew" type="button" class="secondary">新しく記録</button></div>
 </details>
 <p id="salesLedgerMessage" class="note" role="status">端末内に保存。複数人・別端末との自動共有はありません。</p>
-<h4>商品別の販売・利益実績</h4>
-<div id="salesLedgerBySku"></div>
+<div class="sales-rankings-panel" id="salesRankingPanel">
+<h4>実績から見る商品ランキング</h4>
+<p class="note">自分で入力した売却済みの取引を集計。<strong>予想利益や海外の人気順位ではありません。</strong> 同一商品の型番・状態の記入を揃えてください。</p>
+<div class="sales-ranking-controls">
+<div><label for="salesRankingSort">並び替え</label><select id="salesRankingSort" class="genre-select"><option value="profit">利益合計順</option><option value="count">売却回数順</option><option value="avg">1件平均利益順</option></select></div>
+<label class="checkline" for="salesRankingRepeatOnly"><input id="salesRankingRepeatOnly" type="checkbox">2回以上売れた商品のみ</label>
+</div>
+<p id="salesRankingStatus" class="note" role="status">売却履歴を集計中…</p>
+<div id="salesRankingList"></div>
+<p class="note">「複数回売れた」と「繰り返し仕入れた」は別。後者は異なる仕入れ日の記録が必要です。利益は税・返品調整前の自己入力額です。</p>
+</div>
+<details class="section-fold"><summary>商品別の販売・在庫実績（一覧）</summary><div id="salesLedgerBySku"></div></details>
 <details class="section-fold"><summary>売却月別の利益を見る</summary><div id="salesLedgerMonths"></div></details>
 <details class="section-fold"><summary>仕入れ・売却の各記録を編集</summary><div id="salesLedgerRecords"></div></details>
 <button id="ledgerExport" type="button" class="secondary">取引実績をCSVバックアップ</button>
+<details class="section-fold migration-backup-panel" id="migrationBackupPanel">
+<summary>将来のFirebase移行に備えて、全データを一括バックアップ</summary>
+<p class="note">この端末にある候補・調査待ち・予想利益の検証メモ・実際の取引履歴・設定を、1つのJSONファイルに保存します。<strong>現時点でFirebaseへの同期・インポートはできません。</strong></p>
+<p id="migrationBackupStatus" class="note" role="status">保存されたデータの種類を確認中…</p>
+<div id="migrationBackupInventory"></div>
+<div class="buttons"><button id="migrationBackupDownload" type="button">全データをJSON保存</button><button id="migrationBackupRefresh" type="button" class="secondary">保存状況を更新</button></div>
+<p id="migrationBackupMessage" class="note" role="status">バックアップファイルは取引履歴などの情報を含むので、公開GitHubやSNSにはアップロードしないでください。</p>
+</details>
 </div>
 </div>
 <div class="trend-section">
@@ -366,4 +399,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/sales_rankings.js"></script><script src="./assets/migration_backup.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
