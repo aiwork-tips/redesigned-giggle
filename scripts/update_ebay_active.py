@@ -15,9 +15,44 @@ from statistics import median
 import urllib.parse
 import urllib.request
 
-SEARCHES = ("Sony PSP 3000", "Nintendo DS Lite", "Nintendo 3DS", "PS Vita PCH-2000")
+TARGET_PATH = pathlib.Path("data/research_targets.json")
 TOKEN_URL = "https://api.ebay.com/identity/v1/oauth2/token"
 SEARCH_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search"
+
+
+def load_targets(path=TARGET_PATH):
+    """Validate an editable search watchlist; do not silently run unknown queries."""
+    data = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    targets = data.get("targets")
+    if (data.get("schema_version") != 1
+            or data.get("marketplace") != "EBAY_US"
+            or data.get("price_type") != "active_listing_asking_price"
+            or not isinstance(targets, list)
+            or not 1 <= len(targets) <= 50):
+        raise ValueError("Invalid research target catalog")
+    used_ids, used_queries, selected = set(), set(), []
+    for entry in targets:
+        if not isinstance(entry, dict):
+            raise ValueError("Invalid research target entry")
+        item_id, query, category, enabled = (
+            entry.get("id"), entry.get("query"), entry.get("category"), entry.get("enabled")
+        )
+        if (not isinstance(item_id, str) or not 1 <= len(item_id) <= 30
+                or item_id in used_ids or not item_id.isascii()
+                or not isinstance(query, str) or not 2 <= len(query.strip()) <= 100
+                or query != query.strip() or "*" in query
+                or any(ord(ch) < 32 for ch in query)
+                or query.casefold() in used_queries
+                or not isinstance(category, str) or not 1 <= len(category.strip()) <= 30
+                or not isinstance(enabled, bool)):
+            raise ValueError("Invalid or duplicate research target")
+        used_ids.add(item_id)
+        used_queries.add(query.casefold())
+        if enabled:
+            selected.append(query)
+    if not selected:
+        raise ValueError("No enabled research targets")
+    return tuple(selected)
 
 
 def request_json(url, headers, data=None):
@@ -137,10 +172,11 @@ def main():
     if not client_id or not secret:
         print("eBay production access not configured; existing data left unchanged")
         return
+    queries = load_targets()
     access = token(client_id, secret)
     checked_at = datetime.now(timezone.utc).isoformat()
     payloads = []
-    for query in SEARCHES:
+    for query in queries:
         params = urllib.parse.urlencode({
             "q": query, "limit": 12, "filter": "buyingOptions:{FIXED_PRICE}",
         })
@@ -154,7 +190,7 @@ def main():
     path = pathlib.Path("data/ebay_active.json")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("Verified active listing references:", len(record["items"]), "groups:", len(record["groups"]))
+    print("Verified active listing references:", len(record["items"]), "groups:", len(record["groups"]), "configured queries:", len(queries))
 
 
 if __name__ == "__main__":
