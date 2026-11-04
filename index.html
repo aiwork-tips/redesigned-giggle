@@ -46,13 +46,35 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .trend-actions input{flex:1;min-width:145px}
 .trend-actions button{flex:0 0 auto}
 @media(max-width:540px){.trend-sources{grid-template-columns:1fr}.trend-actions input{min-width:100%}}
-</style></head><body><header><h1>Export Scout <small>v4.6</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+.trend-auto-card{padding:12px 0;border-top:1px solid #dde7f2}
+.trend-auto-card strong{display:block;font-size:15px;color:#163d69}
+.trend-auto-card .note{margin:5px 0}
+.trend-auto-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0 4px}
+.trend-auto-actions button{padding:9px 11px}
+.trend-auto-actions a{display:inline-block;background:#edf4ff;color:#20599a;font-size:12px;text-decoration:none;padding:9px 10px;border-radius:9px}
+.trend-auto-actions a:focus-visible{outline:2px solid #246de0;outline-offset:2px}
+.trend-pick-type{display:inline-block;font-size:11px;font-weight:700;background:#eaf2fe;color:#174a82;border-radius:8px;padding:4px 7px;margin:0 0 6px}
+.trend-country{font-size:12px;color:#436581}
+</style></head><body><header><h1>Export Scout <small>v4.7</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>海外トレンド・売れ筋発掘</h2>
+<div class="trend-section">
+<h3 style="margin:4px 0 6px">海外の取引情報から選んだ調査候補</h3>
+<p id="trendAutoStatus" class="note" role="status">根拠付き商品の候補を読み込み中…</p>
+<p class="note">公開された越境取引レポートをもとに選んだ商品名。<strong>レポートの対象期間が過去の場合は「今週の売れ筋」ではありません。</strong> 個別商品の利益は未確認です。</p>
+<div id="trendAutoList"></div>
+<details class="section-fold"><summary id="trendAutoMoreLabel">その他の候補を表示</summary><div id="trendAutoMore"></div></details>
+</div>
+<div class="trend-section">
+<h3 style="margin:4px 0 6px">海外で急上昇した関連キーワード</h3>
+<p id="trendSignalStatus" class="note" role="status">海外のGoogleトレンド自動取得状況を確認中…</p>
+<p class="note">米国・英国・カナダ・豪州・台湾・香港の公式RSSを日次確認する設定。<strong>検索急増＝商品が売れた証拠ではありません。</strong> キーワードが商品候補と関連した場合にのみ表示します。</p>
+<div id="trendSignalList"></div>
+</div>
 <p class="note">海外で関心を集めている日本商品を探す入口。実売ランキング・検索急増・編集部の人気特集を混同せず、<strong>公式サイトの最新情報を直接開いて確認</strong>できます。週ごとの日本商品の実売順位を自動集計した画面ではありません。</p>
-<details class="section-fold trend-section" open>
-<summary>海外の売れ筋・トレンド情報を探す（5サイト）</summary>
+<details class="section-fold trend-section">
+<summary>元サイトのランキングやニュースを直接確認する（5サイト）</summary>
 <div class="trend-sources">
 <a href="https://www.ebay.com/sh/research" target="_blank" rel="noopener noreferrer"><strong>eBay Product Research</strong><span>実際の成約価格・販売数・販売傾向。過去最大3年。セラー登録とログインが必要。基本機能は無料</span></a>
 <a href="https://ebay.co.jp/release/20260828" target="_blank" rel="noopener noreferrer"><strong>eBay Japan 越境ECレポート</strong><span>日本セラーの販売トレンド。2026年4〜6月の調査／2026年8月28日公開。四半期資料</span></a>
