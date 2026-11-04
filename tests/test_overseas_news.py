@@ -32,7 +32,7 @@ class SpecialistRssTests(unittest.TestCase):
         self.assertNotIn("sold_price", result[0])
 
     def test_specific_model_only_when_named_in_headline(self):
-        psp = parse_news_feed(rss("Rare Japanese PSP games spotted"),
+        psp = parse_news_feed(rss("Rare Japanese PSP console found"),
                               "Time Extension", NOW)[0]
         self.assertEqual(psp["term"], "Sony PSP Japanese")
         psp3000 = parse_news_feed(rss("Sony PSP-3000 console revisited"),
@@ -48,8 +48,20 @@ class SpecialistRssTests(unittest.TestCase):
                               "Time Extension", NOW)[0]
         self.assertEqual(gba["term"], "Nintendo Game Boy Advance SP Japanese")
 
-    def test_generic_editorial_mention_is_not_sold_data(self):
-        psp = parse_news_feed(rss("PSP homebrew update arrives"),
+    def test_generic_editorial_mention_is_filtered(self):
+        unrelated = (
+            "PSP homebrew update arrives",
+            "Castlevania-style homage lets you play on your Nintendo DS",
+            "N64 original voice actor joins cast",
+            "New emulator will corrupt NES games in real time",
+            "Symphony of the Night receives an SNES port",
+        )
+        for title in unrelated:
+            with self.subTest(title=title):
+                self.assertEqual(parse_news_feed(rss(title), "Time Extension", NOW), [])
+
+    def test_collectible_headline_is_only_an_editorial_signal(self):
+        psp = parse_news_feed(rss("Rare Japanese PSP console found"),
                               "Time Extension", NOW)[0]
         self.assertEqual(psp["signal_type"], "overseas_editorial_product_mention")
         self.assertNotIn("sold_count", psp)
@@ -77,7 +89,7 @@ class SpecialistRssTests(unittest.TestCase):
             build_record({}, NOW, FEEDS.keys())
 
     def test_source_unavailable_provenance(self):
-        article = parse_news_feed(rss("Japanese Dreamcast games get a remake"),
+        article = parse_news_feed(rss("Rare Japanese Dreamcast game collection discovered"),
                                   "Time Extension", NOW)
         result = build_record({"Time Extension": article}, NOW, ("Nintendo Life",))
         self.assertEqual(result["source"], "publisher_rss")
