@@ -43,3 +43,7 @@ jobs:
         run: node tests/test_repeatability_ui.cjs
       - name: Test actual purchase and completed-sale ledger offline
         run: node tests/test_sales_ledger_ui.cjs
+      - name: Test sold-only ranking and repeated sourcing detection offline
+        run: node tests/test_sales_rankings_ui.cjs
+      - name: Test local migration backup and isolation offline
+        run: node tests/test_migration_backup_ui.cjs
