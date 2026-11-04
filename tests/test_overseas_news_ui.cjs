@@ -44,6 +44,13 @@ const empty=await run(initial);
 assert.match(empty.get('newsSignalStatus').textContent,/未確認/);
 assert.equal(empty.get('newsSignalList').children.length,0);
 
+const unavailable=await run({schema_version:1,source:'unavailable',
+signal_type:'overseas_editorial_product_mention',
+generated_at:new Date().toISOString(),checked_sources:[],
+failed_sources:['Time Extension','Nintendo Life'],articles:[]});
+assert.match(unavailable.get('newsSignalStatus').textContent,/RSS取得失敗/);
+assert.equal(unavailable.get('newsSignalList').children.length,0);
+
 const valid=await run(feed());
 assert.match(valid.get('newsSignalStatus').textContent,/1件/);
 const card=valid.get('newsSignalList').children[0];
