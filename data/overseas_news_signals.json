@@ -2,53 +2,12 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-04T09:23:27.741722+00:00",
+  "generated_at": "2026-11-04T09:25:35.115592+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [
-    {
-      "id": "time_extension_0",
-      "product_name": "Nintendo DS",
-      "term": "Nintendo DS Japanese",
-      "article_title": "'What We Do in the Shadows' Gets a Castlevania-Style Homage, and You Can Play It on Your Nintendo DS",
-      "article_url": "https://www.timeextension.com/news/2026/11/what-we-do-in-the-shadows-gets-a-castlevania-style-homage-and-you-can-play-it-on-your-nintendo-ds",
-      "publisher": "Time Extension",
-      "published_at": "2026-11-03T15:00:00+00:00",
-      "signal_type": "overseas_editorial_product_mention"
-    },
-    {
-      "id": "nintendo_life_0",
-      "product_name": "NINTENDO64",
-      "term": "Nintendo 64 Japanese",
-      "article_title": "Zelda: Ocarina Of Time Switch 2 Cast Features A Returning Voice Actor From The N64 Original",
-      "article_url": "https://www.nintendolife.com/news/2026/11/zelda-ocarina-of-time-switch-2-cast-features-a-returning-voice-actor-from-the-n64-original",
-      "publisher": "Nintendo Life",
-      "published_at": "2026-11-03T14:30:00+00:00",
-      "signal_type": "overseas_editorial_product_mention"
-    },
-    {
-      "id": "time_extension_1",
-      "product_name": "スーパーファミコン",
-      "term": "Super Famicom Japanese game",
-      "article_title": "Castlevania: Symphony of the Night Is Getting an AI-Free SNES Port, and You Can Play It Now",
-      "article_url": "https://www.timeextension.com/news/2026/11/castlevania-symphony-of-the-night-is-getting-an-ai-free-snes-port-and-you-can-play-it-now",
-      "publisher": "Time Extension",
-      "published_at": "2026-11-02T11:00:00+00:00",
-      "signal_type": "overseas_editorial_product_mention"
-    },
-    {
-      "id": "time_extension_2",
-      "product_name": "ファミコン",
-      "term": "Nintendo Famicom Japanese game",
-      "article_title": "Glitch Boy: New Emulator and Chiptune Synth Allows Users to 'Corrupt' NES Games in Real Time",
-      "article_url": "https://www.timeextension.com/news/2026/11/glitch-boy-new-emulator-and-chiptune-synth-allows-users-to-corrupt-nes-games-in-real-time",
-      "publisher": "Time Extension",
-      "published_at": "2026-11-01T14:00:00+00:00",
-      "signal_type": "overseas_editorial_product_mention"
-    }
-  ],
+  "articles": [],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
