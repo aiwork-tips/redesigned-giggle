@@ -80,5 +80,9 @@ const file=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectU
 a.href=url;a.download='export-scout-trend-inbox.csv';document.body.append(a);a.click();a.remove();URL.revokeObjectURL(url);
 $('trendMessage').textContent='調査待ち候補をCSVで書き出しました。';
 });
+if(typeof window!=='undefined'){
+  window.ExportScoutTrendAdd = (term,source)=>add(term,source);
+  window.ExportScoutTrendResearch = term=>goToResearch(term);
+}
 load();setupSeeds();render();
 })();
