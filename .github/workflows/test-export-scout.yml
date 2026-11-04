@@ -48,3 +48,5 @@ jobs:
         run: node tests/test_sales_rankings_ui.cjs
       - name: Test local migration backup and isolation offline
         run: node tests/test_migration_backup_ui.cjs
+      - name: Test guarded local JSON restore and rollback offline
+        run: node tests/test_migration_restore_ui.cjs
