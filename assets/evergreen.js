@@ -45,6 +45,9 @@ actionLink('根拠レポート',x.source_url));
 const verify=document.createElement('button');verify.type='button';verify.className='secondary';verify.textContent='この商品を検証';
 verify.addEventListener('click',()=>{if(typeof window.ExportScoutRepeatabilityOpen==='function')window.ExportScoutRepeatabilityOpen(x.name,x.query)});
 actions.append(verify);
+const actual=document.createElement('button');actual.type='button';actual.className='secondary';actual.textContent='実際の仕入れ・売却を記録';
+actual.addEventListener('click',()=>{if(typeof window.ExportScoutSalesOpen==='function')window.ExportScoutSalesOpen(x.name)});
+actions.append(actual);
 card.append(tag,title,meta,why,caution,sourcing,actions);
 return card;
 }
