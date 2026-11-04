@@ -5,7 +5,7 @@ const KEY='export-scout-repeatability-v1';
 const MAX=200;
 const $=id=>document.getElementById(id);
 let records=[];
-const q=id=>$(id).value.trim();
+const q=id=>String($(id).value??'').trim();
 const money=n=>Math.round(n).toLocaleString('ja-JP')+'円';
 const num=v=>v===''?null:Number(v);
 const clean=v=>String(v??'').trim().slice(0,180);
