@@ -54,8 +54,8 @@ status.textContent='海外専門記事の自動チェック：実行結果未確
 if(articles==='unavailable'){
 status.textContent='海外専門メディアのRSS取得失敗：'+data.failed_sources.join('・')+'。商品が存在しないという意味ではありません。';return;
 }
-status.textContent='記事確認：'+new Date(data.generated_at).toLocaleDateString('ja-JP')+' ／ 新着の商品関連トピック：'+articles.length+'件（'+data.checked_sources.join('・')+'）。取引数・利益は未確認。';
-if(!articles.length){const p=document.createElement('p');p.className='note';p.textContent='今回の新着RSSに日本の商品調査に使える関連キーワードは見つかりませんでした。';root.append(p)}
+status.textContent='記事確認：'+new Date(data.generated_at).toLocaleDateString('ja-JP')+' ／ 仕入れ調査につながる記事候補：'+articles.length+'件（'+data.checked_sources.join('・')+'）。取引数・利益は未確認。';
+if(!articles.length){const p=document.createElement('p');p.className='note';p.textContent='今回の新着記事には、限定品・現物商品・コレクター向けなどの条件を満たす候補がありませんでした。RSSの取得失敗ではありません。';root.append(p)}
 articles.slice(0,12).forEach(x=>root.append(makeCard(x)));
 }catch(e){
 status.textContent='海外専門記事の候補を表示できません（'+e.message+'）。架空の最新ニュースは表示しません。';
