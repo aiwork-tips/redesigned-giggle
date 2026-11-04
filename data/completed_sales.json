@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "source": "not_connected",
+  "price_type": "completed_sale_total_usd",
+  "items": [],
+  "notice": "No sold-price provider is connected. Do not populate this file with active asking prices."
+}
