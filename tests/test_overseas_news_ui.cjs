@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const code=fs.readFileSync('assets/overseas_news.js','utf8');
-const initial=JSON.parse(fs.readFileSync('data/overseas_news_signals.json','utf8'));
+const initial={schema_version:1,source:'not_checked',signal_type:'overseas_editorial_product_mention',generated_at:null,checked_sources:[],failed_sources:[],articles:[]};
 
 function element(){
 return {children:[],textContent:'',events:{},className:'',
