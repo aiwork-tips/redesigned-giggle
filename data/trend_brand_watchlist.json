@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "document_type": "japanese_brand_related_search_watchlist",
+  "notice": "Curated keyword watchlist for overseas SEARCH interest only. These brand or franchise terms are NOT sales data, not product recommendations, and not claims of weekly bestsellers.",
+  "topics": [
+    {
+      "id": "nintendo_switch",
+      "name": "Nintendo Switch関連",
+      "term": "Nintendo Switch Japan limited",
+      "category": "ゲーム機",
+      "aliases": [
+        "\\bnintendo switch\\b",
+        "\\bswitch 2\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "nintendo_3ds",
+      "name": "Nintendo 3DS関連",
+      "term": "Nintendo 3DS Japanese console",
+      "category": "携帯ゲーム",
+      "aliases": [
+        "\\bnintendo 3ds\\b",
+        "\\b3ds\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "sony_psp",
+      "name": "PSP関連",
+      "term": "Sony PSP Japanese console",
+      "category": "携帯ゲーム",
+      "aliases": [
+        "\\bsony psp\\b",
+        "\\bplaystation portable\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "sony_ps_vita",
+      "name": "PS Vita関連",
+      "term": "Sony PS Vita Japanese",
+      "category": "携帯ゲーム",
+      "aliases": [
+        "\\bplaystation vita\\b",
+        "\\bps vita\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "game_boy",
+      "name": "ゲームボーイ関連",
+      "term": "Nintendo Game Boy Japanese",
+      "category": "携帯ゲーム",
+      "aliases": [
+        "\\bgame[\\s-]?boy\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "tamagotchi",
+      "name": "たまごっち関連",
+      "term": "Bandai Tamagotchi Japanese",
+      "category": "玩具",
+      "aliases": [
+        "\\btamagotchi\\b",
+        "たまごっち"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "sonny_angel",
+      "name": "ソニーエンジェル",
+      "term": "Sonny Angel Japanese figure",
+      "category": "フィギュア",
+      "aliases": [
+        "\\bsonny angel\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "smiski",
+      "name": "スミスキー",
+      "term": "Smiski Japanese collectible",
+      "category": "フィギュア",
+      "aliases": [
+        "\\bsmiski\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "hello_kitty",
+      "name": "ハローキティ関連",
+      "term": "Hello Kitty Japanese limited",
+      "category": "キャラクター雑貨",
+      "aliases": [
+        "\\bhello kitty\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "kuromi",
+      "name": "クロミ関連",
+      "term": "Sanrio Kuromi Japan limited",
+      "category": "キャラクター雑貨",
+      "aliases": [
+        "\\bkuromi\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "cinnamoroll",
+      "name": "シナモロール関連",
+      "term": "Sanrio Cinnamoroll Japan goods",
+      "category": "キャラクター雑貨",
+      "aliases": [
+        "\\bcinnamoroll\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "hatsune_miku",
+      "name": "初音ミク関連",
+      "term": "Hatsune Miku official figure Japan",
+      "category": "フィギュア",
+      "aliases": [
+        "\\bhatsune miku\\b",
+        "初音ミク"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "gundam",
+      "name": "ガンダム関連",
+      "term": "Bandai Gundam Gunpla Japan",
+      "category": "模型",
+      "aliases": [
+        "\\bgundam\\b",
+        "\\bgunpla\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "yugioh",
+      "name": "遊戯王カード関連",
+      "term": "Yu Gi Oh Japanese trading card",
+      "category": "トレカ",
+      "aliases": [
+        "\\byu[\\s-]?gi[\\s-]?oh\\b",
+        "遊戯王"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "dragon_ball",
+      "name": "ドラゴンボール関連",
+      "term": "Dragon Ball Japanese figure",
+      "category": "フィギュア",
+      "aliases": [
+        "\\bdragon ball\\b",
+        "ドラゴンボール"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "naruto",
+      "name": "NARUTO関連",
+      "term": "Naruto Japanese merchandise",
+      "category": "アニメグッズ",
+      "aliases": [
+        "\\bnaruto\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "sailor_moon",
+      "name": "セーラームーン関連",
+      "term": "Sailor Moon Japanese collectible",
+      "category": "アニメグッズ",
+      "aliases": [
+        "\\bsailor moon\\b",
+        "セーラームーン"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "studio_ghibli",
+      "name": "スタジオジブリ関連",
+      "term": "Studio Ghibli official Japanese goods",
+      "category": "キャラクター雑貨",
+      "aliases": [
+        "\\bstudio ghibli\\b",
+        "\\bspirited away\\b",
+        "ジブリ"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "g_shock",
+      "name": "G-SHOCK関連",
+      "term": "Casio G Shock Japan limited",
+      "category": "腕時計",
+      "aliases": [
+        "\\bg[\\s-]?shock\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "walkman",
+      "name": "ソニーウォークマン関連",
+      "term": "Sony Walkman Japan",
+      "category": "オーディオ",
+      "aliases": [
+        "\\bwalkman\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "bearbrick",
+      "name": "BE@RBRICK関連",
+      "term": "Medicom Bearbrick Japan",
+      "category": "フィギュア",
+      "aliases": [
+        "\\bbearbrick\\b",
+        "\\bbe@rbrick\\b"
+      ],
+      "enabled": true
+    },
+    {
+      "id": "tomica",
+      "name": "トミカ関連",
+      "term": "Takara Tomy Tomica Japanese",
+      "category": "ミニカー",
+      "aliases": [
+        "\\btomica\\b",
+        "トミカ"
+      ],
+      "enabled": true
+    }
+  ]
+}
