@@ -9,9 +9,14 @@ html = Path("index.html").read_text(encoding="utf-8")
 closing = "</script></body></html>"
 if not html.rstrip().endswith(closing):
     raise SystemExit("Unexpected document ending")
-for tag in ("<script>", "</script>", "<body", "</body>", "<main", "</main>", "</html>"):
+for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
+
+if html.count("</script>") != 2 or html.count('<script src="./assets/opportunities.js">') != 1:
+    raise SystemExit("Expected one inline app script plus one independent opportunities script")
+if not Path("assets/opportunities.js").is_file():
+    raise SystemExit("Missing separate opportunity viewer code")
 
 start = html.index("<script>") + len("<script>")
 end = html.index("</script>", start)
@@ -45,6 +50,12 @@ if 'id="watchlistStatus"' not in html or "data/research_targets.json" not in js:
     raise SystemExit("Missing editable eBay watchlist status integration")
 if "checkWatchlist();" not in js:
     raise SystemExit("Watchlist status is not checked on page load")
+
+for field in ("autoPairsStatus", "autoPairsList"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing paired-price viewer field: " + field)
+
+subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
