@@ -1,0 +1,39 @@
+name: Fetch eBay active listing references
+on:
+  schedule:
+    - cron: '43 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: export-scout-ebay-active
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
+      EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate parser offline
+        run: python -m unittest discover -s tests -v
+      - name: Fetch official eBay active listing prices
+        run: python scripts/update_ebay_active.py
+      - name: Commit verified references if changed
+        run: |
+          if [ ! -f data/ebay_active.json ]; then
+            echo "No eBay credentials configured; skip publication."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/ebay_active.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh eBay active listing references"
+            git push
+          fi
