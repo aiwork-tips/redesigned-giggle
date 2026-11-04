@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "generated_at": null,
+  "source": "not_checked",
+  "signal_type": "google_trends_related_keyword",
+  "checked_regions": [],
+  "failed_regions": [],
+  "signals": [],
+  "notice": "No verified live Google Trends RSS match has been checked yet. The historical report-backed product picks are displayed separately; search spikes are not sales."
+}
