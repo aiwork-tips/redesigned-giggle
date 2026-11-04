@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "marketplace": "EBAY_US",
+  "price_type": "active_listing_asking_price",
+  "notice": "These are search terms for current eBay listing asking prices, NOT completed-sale prices or recommended profitable products.",
+  "targets": [
+    {
+      "id": "t01",
+      "query": "Nintendo Wii RVL-001",
+      "category": "据え置きゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t02",
+      "query": "Nintendo GameCube DOL-001",
+      "category": "据え置きゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t03",
+      "query": "Sony PlayStation 2 SCPH-70000",
+      "category": "据え置きゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t04",
+      "query": "Sony PSP 3000",
+      "category": "携帯ゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t05",
+      "query": "Nintendo DS Lite",
+      "category": "携帯ゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t06",
+      "query": "Sony PS Vita PCH-2000",
+      "category": "携帯ゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t07",
+      "query": "Nintendo Game Boy Advance SP",
+      "category": "携帯ゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t08",
+      "query": "Nintendo 3DS LL Japanese",
+      "category": "携帯ゲーム",
+      "enabled": true
+    },
+    {
+      "id": "t09",
+      "query": "Canon AE-1 film camera",
+      "category": "カメラ",
+      "enabled": true
+    },
+    {
+      "id": "t10",
+      "query": "Olympus mju II film camera",
+      "category": "カメラ",
+      "enabled": true
+    },
+    {
+      "id": "t11",
+      "query": "Nikon FM2 film camera",
+      "category": "カメラ",
+      "enabled": true
+    },
+    {
+      "id": "t12",
+      "query": "Seiko 5 vintage watch",
+      "category": "腕時計",
+      "enabled": true
+    },
+    {
+      "id": "t13",
+      "query": "Casio G Shock DW-5600",
+      "category": "腕時計",
+      "enabled": true
+    },
+    {
+      "id": "t14",
+      "query": "Citizen Promaster vintage",
+      "category": "腕時計",
+      "enabled": true
+    },
+    {
+      "id": "t15",
+      "query": "Pokemon Japanese vintage card",
+      "category": "トレカ",
+      "enabled": true
+    },
+    {
+      "id": "t16",
+      "query": "Yu Gi Oh Japanese vintage card",
+      "category": "トレカ",
+      "enabled": true
+    },
+    {
+      "id": "t17",
+      "query": "Bandai Tamagotchi vintage",
+      "category": "ホビー",
+      "enabled": true
+    },
+    {
+      "id": "t18",
+      "query": "Bandai S.H.Figuarts figure",
+      "category": "ホビー",
+      "enabled": true
+    }
+  ]
+}
