@@ -55,7 +55,19 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .trend-auto-actions a:focus-visible{outline:2px solid #246de0;outline-offset:2px}
 .trend-pick-type{display:inline-block;font-size:11px;font-weight:700;background:#eaf2fe;color:#174a82;border-radius:8px;padding:4px 7px;margin:0 0 6px}
 .trend-country{font-size:12px;color:#436581}
-</style></head><body><header><h1>Export Scout <small>v5.0</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+
+.repeat-panel{margin-top:14px;border:1px solid #c9daf0;border-radius:13px;background:#f8fbff;padding:12px}
+.repeat-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+.repeat-field{min-width:0}
+.repeat-wide{grid-column:1/-1}
+.repeat-fields input,.repeat-fields select{width:100%;max-width:100%}
+.repeat-record{padding:12px 0;border-top:1px solid #d7e4f2}
+.repeat-record strong{display:block;color:#17395f}
+.repeat-record p{margin:6px 0}
+.repeat-verdict{display:inline-block;font-size:12px;background:#e5eefb;color:#234b7a;padding:5px 8px;border-radius:8px;margin-top:6px}
+.repeat-editor summary{padding:10px 4px}
+@media(max-width:530px){.repeat-fields{grid-template-columns:1fr}}
+</style></head><body><header><h1>Export Scout <small>v5.1</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>商品発掘｜定番候補＋海外トレンド</h2>
@@ -67,6 +79,35 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 <div id="evergreenList"></div>
 <details class="section-fold"><summary id="evergreenMoreLabel">その他の定番候補を表示</summary><div id="evergreenMore"></div></details>
 <p class="note">継続利益の判定に必要：過去90日のeBay成約件数と成約総額、出品数、同じ型番・状態での国内仕入れ価格、海外送料と手数料。複数回仕入れ・販売できるかは実績ができてから判断します。</p>
+<div class="repeat-panel" id="repeatabilityPanel">
+<h3 style="margin:4px 0 8px">定番商品の利益・再仕入れ検証メモ</h3>
+<p class="note">「売れ筋」情報だけでなく、<strong>特定の型番・版・状態</strong>を比較。自分で調べた数値とリンクをこの端末に保存します。実売データの自動取得や、利益の保証ではありません。</p>
+<p id="repeatStatus" class="note" role="status">検証メモを読み込み中…</p>
+<details class="section-fold repeat-editor" id="repeatEditor">
+<summary>商品の検証結果を入力・編集</summary>
+<div class="repeat-fields">
+<div class="repeat-field repeat-wide"><label for="repeatSku">型番・商品番号・カード番号・状態（具体的に）</label><input id="repeatSku" type="text" maxlength="180" placeholder="例：DS Lite USG-001 白 動作確認済"></div>
+<div class="repeat-field repeat-wide"><label for="repeatCategory">メモ・調査対象カテゴリー（任意）</label><input id="repeatCategory" type="text" maxlength="100" placeholder="例：携帯ゲーム"></div>
+<div class="repeat-field"><label for="repeatSoldCount">過去90日・同仕様のeBay成約件数</label><input id="repeatSoldCount" type="number" min="0" max="100000" step="1" inputmode="numeric" placeholder="実際に調べた件数"></div>
+<div class="repeat-field"><label for="repeatActiveCount">現在の出品件数（任意）</label><input id="repeatActiveCount" type="number" min="0" max="100000" step="1" inputmode="numeric" placeholder="参考・未入力可"></div>
+<div class="repeat-field"><label for="repeatUsd">同仕様の成約総額中央値（USD・購入者送料込み）</label><input id="repeatUsd" type="number" min="0" max="100000" step="0.01" inputmode="decimal" placeholder="例：85.00"></div>
+<div class="repeat-field"><label for="repeatCost">国内の実際の仕入れ総額（円・国内送料込み）</label><input id="repeatCost" type="number" min="0" step="1" inputmode="numeric" placeholder="例：4500"></div>
+<div class="repeat-field"><label for="repeatShip">購入者までの海外配送費（円）</label><input id="repeatShip" type="number" min="0" step="1" inputmode="numeric" placeholder="例：1800"></div>
+<div class="repeat-field"><label for="repeatFee">販売・決済の手数料率（％）</label><input id="repeatFee" type="number" min="0" max="100" step="0.1" inputmode="decimal" placeholder="例：14"></div>
+<div class="repeat-field"><label for="repeatOther">その他費用（円）</label><input id="repeatOther" type="number" min="0" step="1" inputmode="numeric" placeholder="梱包・為替手数料など"></div>
+<div class="repeat-field"><label for="repeatFx">今回使う為替レート（円/USD）</label><input id="repeatFx" type="number" min="0" step="0.001" inputmode="decimal" placeholder="例：155.1"></div>
+<div class="repeat-field"><label for="repeatTarget">目標利益（円・1件あたり）</label><input id="repeatTarget" type="number" min="0" step="100" inputmode="numeric" value="2000"></div>
+<div class="repeat-field"><label for="repeatSourcing">同一商品の国内での再仕入れ可能性</label><select id="repeatSourcing" class="genre-select"><option value="未確認">未確認</option><option value="単発">単発（1点だけ）</option><option value="複数回見込み">複数回見込み（自分で確認）</option></select></div>
+<div class="repeat-field repeat-wide"><label for="repeatSoldUrl">eBay成約調査の根拠URL（任意・評価時は必須）</label><input id="repeatSoldUrl" type="url" maxlength="500" placeholder="https://www.ebay.com/..."></div>
+<div class="repeat-field repeat-wide"><label for="repeatBuyUrl">国内仕入れ先の根拠URL（任意・評価時は必須）</label><input id="repeatBuyUrl" type="url" maxlength="500" placeholder="https://jp.mercari.com/..."></div>
+</div>
+<div class="buttons"><button id="repeatSave" type="button">検証メモを保存</button><button id="repeatReset" type="button" class="secondary">新しい商品を入力</button></div>
+<p class="note">入力した件数・価格・在庫は本人のメモです。リンクを記録しても、アプリが内容を確認したことにはなりません。保守的試算は販売額10%低下・海外送料500円増で計算します。</p>
+</details>
+<p id="repeatFeedback" class="note" role="status">検証メモは端末内に保存。スマホのデータ削除に備え、CSVを控えてね。</p>
+<div id="repeatList"></div>
+<button id="repeatExport" type="button" class="secondary">検証メモをCSV保存</button>
+</div>
 </div>
 <div class="trend-section">
 <h3 style="margin:4px 0 6px">② 海外ゲーム専門メディアの新着候補</h3>
@@ -279,4 +320,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
