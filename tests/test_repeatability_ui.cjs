@@ -21,13 +21,13 @@ get('usdRate').value='150';
 get('ship').value='1800';
 get('rate').value='14';
 get('other').value='200';
-const fakeURL={
-  createObjectURL(){urls.push('blob:local');return 'blob:local'},
-  revokeObjectURL(){}
+const FakeURL=class extends URL {
+  static createObjectURL(){urls.push('blob:local');return 'blob:local'}
+  static revokeObjectURL(){}
 };
 const context={
 document:{getElementById:get,createElement:element,body:element()},
-window:{},URL:class extends URL {},Date,Number,String,JSON,
+window:{},URL:FakeURL,Date,Number,String,JSON,
 Blob:class{constructor(content,options){this.content=content;this.options=options}},
 localStorage:{getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)}
 };
@@ -39,8 +39,8 @@ const set=(k,v)=>{t.get(k).value=String(v)};
 t.open('Nintendo DS Lite 本体','Nintendo DS Lite console Japanese');
 assert.equal(t.get('repeatEditor').open,true);
 assert.match(t.get('repeatSku').value,/Nintendo DS Lite/);
-assert.equal(t.get('repeatFx').value,'150');
-assert.equal(t.get('repeatShip').value,'1800');
+assert.equal(Number(t.get('repeatFx').value),150);
+assert.equal(Number(t.get('repeatShip').value),1800);
 set('repeatSku','DS Lite USG-001 white full working');
 set('repeatSoldCount',5);
 set('repeatActiveCount',12);
