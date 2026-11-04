@@ -55,25 +55,33 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .trend-auto-actions a:focus-visible{outline:2px solid #246de0;outline-offset:2px}
 .trend-pick-type{display:inline-block;font-size:11px;font-weight:700;background:#eaf2fe;color:#174a82;border-radius:8px;padding:4px 7px;margin:0 0 6px}
 .trend-country{font-size:12px;color:#436581}
-</style></head><body><header><h1>Export Scout <small>v4.9</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+</style></head><body><header><h1>Export Scout <small>v5.0</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
-<h2>海外からの商品候補を自動発掘</h2>
-<p class="note">海外メディアの新着記事・海外検索の急上昇・越境取引レポートを元に、商品名や調査キーワードを提示します。<strong>検索急増・記事での言及・過去の販売実績はそれぞれ違う根拠</strong>です。実際のeBay成約価格は別途確認が必要です。</p>
+<h2>商品発掘｜定番候補＋海外トレンド</h2>
+<p class="note">毎月繰り返して調査する定番商品と、海外で新しく話題になった商品を分けて表示します。<strong>需要が報告されたカテゴリーでも、特定商品が継続的に儲かるとは限りません。</strong> eBayの成約件数・販売価格と、国内仕入れの再現性・送料・手数料を調べてから利益候補にしてください。</p>
+<div class="trend-section" id="evergreenDiscovery">
+<h3 style="margin:4px 0 6px">① 定番・リピート仕入れ向け調査候補</h3>
+<p id="evergreenStatus" class="note" role="status">海外で継続需要が報告されるカテゴリーを確認中…</p>
+<p class="note">eBayの2025年〜2026年の取引報告やZenMarket年間購入実績から、国内で繰り返し仕入れを探しやすいモデル・商品群を抽出。<strong>利益確定ランキングではなく、定番調査リスト</strong>です。</p>
+<div id="evergreenList"></div>
+<details class="section-fold"><summary id="evergreenMoreLabel">その他の定番候補を表示</summary><div id="evergreenMore"></div></details>
+<p class="note">継続利益の判定に必要：過去90日のeBay成約件数と成約総額、出品数、同じ型番・状態での国内仕入れ価格、海外送料と手数料。複数回仕入れ・販売できるかは実績ができてから判断します。</p>
+</div>
 <div class="trend-section">
-<h3 style="margin:4px 0 6px">① 海外ゲーム専門メディアの新着候補</h3>
+<h3 style="margin:4px 0 6px">② 海外ゲーム専門メディアの新着候補</h3>
 <p id="newsSignalStatus" class="note" role="status">海外専門サイトの記事を確認中…</p>
 <p class="note">Nintendo Life・Time Extensionの新着から、商品・ゲーム機名と、限定品・現物商品・コレクター向けの話題がそろう記事を抽出。ソフトの移植・声優ニュースなどは除外。記事の掲載は購入実績ではありません。</p>
 <div id="newsSignalList"></div>
 </div>
 <div class="trend-section">
-<h3 style="margin:4px 0 6px">② 海外検索で急上昇した関連候補</h3>
+<h3 style="margin:4px 0 6px">③ 海外検索で急上昇した関連候補</h3>
 <p id="trendSignalStatus" class="note" role="status">海外Googleトレンドの取得状況を確認中…</p>
 <p class="note">米国・英国・カナダ・豪州・台湾・香港の検索急上昇を照合。検索数の増加は売れた件数ではありません。</p>
 <div id="trendSignalList"></div>
 </div>
 <div class="trend-section">
-<h3 style="margin:4px 0 6px">③ 海外での取引レポートから選んだ候補</h3>
+<h3 style="margin:4px 0 6px">④ 海外での取引レポートから選んだ候補</h3>
 <p id="trendAutoStatus" class="note" role="status">公開レポートの候補を読み込み中…</p>
 <p class="note">取引レポートを根拠にした過去の調査候補。<strong>今週の売れ筋ランキングや販売利益の確定値ではありません。</strong></p>
 <div id="trendAutoList"></div>
@@ -271,4 +279,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
