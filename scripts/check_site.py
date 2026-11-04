@@ -82,6 +82,16 @@ for field in ("newsSignalStatus", "newsSignalList"):
     if f'id="{field}"' not in html:
         raise SystemExit("Missing overseas publisher RSS panel: " + field)
 
+# Put recently detected signals before the historical cross-border report picks.
+news_pos = html.find('id="newsSignalStatus"')
+trend_pos = html.find('id="trendSignalStatus"')
+report_pos = html.find('id="trendAutoStatus"')
+if not (0 < news_pos < trend_pos < report_pos):
+    raise SystemExit("Fresh overseas discovery must appear before archival report picks")
+if '海外からの商品候補を自動発掘' not in html:
+    raise SystemExit("Discovery-first home section missing")
+
+
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
     js_file.write_text(js, encoding="utf-8")
