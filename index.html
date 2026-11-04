@@ -29,8 +29,52 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 #discover>div{background:#f8fbff!important;border-color:#d9e5f2!important}
 #decisionSummary>div{background:#f8fbff}
 @media(prefers-reduced-motion:no-preference){button{transition:background .15s,transform .15s}button:active{transform:scale(.985)}}
-.shortlist-title{font-size:16px;margin:18px 0 8px}.shortlist-card{background:#f7faff;border:1px solid #d7e5f5;border-radius:12px;padding:12px;margin:9px 0}.shortlist-card strong{display:block}.shortlist-card p{margin:7px 0}.shortlist-card button{margin-top:4px}.fx-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.fx-info>div{background:#f5f9ff;border:1px solid #d8e4f3;border-radius:11px;padding:11px;min-width:0}.fx-info small{display:block;color:#536b86;font-size:12px;margin-bottom:5px}.fx-info strong{display:block;font-size:13px;color:#17395d;overflow-wrap:anywhere;line-height:1.55}@media(max-width:480px){.fx-info{grid-template-columns:1fr}}</style></head><body><header><h1>Export Scout <small>v4.5</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+.shortlist-title{font-size:16px;margin:18px 0 8px}.shortlist-card{background:#f7faff;border:1px solid #d7e5f5;border-radius:12px;padding:12px;margin:9px 0}.shortlist-card strong{display:block}.shortlist-card p{margin:7px 0}.shortlist-card button{margin-top:4px}.fx-info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.fx-info>div{background:#f5f9ff;border:1px solid #d8e4f3;border-radius:11px;padding:11px;min-width:0}.fx-info small{display:block;color:#536b86;font-size:12px;margin-bottom:5px}.fx-info strong{display:block;font-size:13px;color:#17395d;overflow-wrap:anywhere;line-height:1.55}@media(max-width:480px){.fx-info{grid-template-columns:1fr}}
+/* Trend discovery: source links + local no-price shortlist */
+.trend-sources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.trend-sources>a{display:block;text-decoration:none;color:#1c426e;background:#f6faff;border:1px solid #d7e5f3;border-radius:12px;padding:12px;min-width:0}
+.trend-sources>a:focus-visible{outline:3px solid #90bdff;outline-offset:2px}
+.trend-sources strong{display:block;color:#154b87;font-size:14px;line-height:1.45;margin-bottom:4px}
+.trend-sources span{display:block;color:#4c637d;font-size:12px;line-height:1.5}
+.trend-seed,.trend-entry{border-top:1px solid #dde7f2;padding:12px 0}
+.trend-seed strong,.trend-entry strong{display:block}
+.trend-seed p,.trend-entry p{margin:6px 0}
+.trend-seed>a{display:inline-block;margin-left:12px;font-size:12px;color:#245da5}
+.trend-delete{background:transparent;color:#825163;border:1px solid #e0cdd1;padding:7px 10px;font-size:12px}
+.trend-section{border:1px solid #dfebf7;padding:10px 12px;border-radius:12px;margin:10px 0;background:#fbfdff}
+.trend-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.trend-actions input{flex:1;min-width:145px}
+.trend-actions button{flex:0 0 auto}
+@media(max-width:540px){.trend-sources{grid-template-columns:1fr}.trend-actions input{min-width:100%}}
+</style></head><body><header><h1>Export Scout <small>v4.6</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
+<section class="card" id="trendDiscovery">
+<h2>海外トレンド・売れ筋発掘</h2>
+<p class="note">海外で関心を集めている日本商品を探す入口。実売ランキング・検索急増・編集部の人気特集を混同せず、<strong>公式サイトの最新情報を直接開いて確認</strong>できます。週ごとの日本商品の実売順位を自動集計した画面ではありません。</p>
+<details class="section-fold trend-section" open>
+<summary>海外の売れ筋・トレンド情報を探す（5サイト）</summary>
+<div class="trend-sources">
+<a href="https://www.ebay.com/sh/research" target="_blank" rel="noopener noreferrer"><strong>eBay Product Research</strong><span>実際の成約価格・販売数・販売傾向。過去最大3年。セラー登録とログインが必要。基本機能は無料</span></a>
+<a href="https://ebay.co.jp/release/20260828" target="_blank" rel="noopener noreferrer"><strong>eBay Japan 越境ECレポート</strong><span>日本セラーの販売トレンド。2026年4〜6月の調査／2026年8月28日公開。四半期資料</span></a>
+<a href="https://trends.google.com/trending?geo=US&amp;hl=ja" target="_blank" rel="noopener noreferrer"><strong>Googleトレンド・米国</strong><span>検索が急増した話題。過去24時間〜7日など期間を切り替え可能。日本商品限定でも売上順位でもない</span></a>
+<a href="https://journal.zen.one/japanese-item-ranking/" target="_blank" rel="noopener noreferrer"><strong>ZenMarket 日本商品ランキング</strong><span>2025年7月〜2026年6月の海外購入実績。TOP10記事公開、TOP100資料には会員登録などの条件あり</span></a>
+<a href="https://media.buyee.jp/content/en/recommend-en/mercari-en/" target="_blank" rel="noopener noreferrer"><strong>Buyee 人気商品・ランキング特集</strong><span>海外購入者向けに選ばれた日本商品の特集。編集部選定情報を含む。更新間隔は未確認</span></a>
+</div>
+<p class="note">※各リンクは提供元のサイトを開きます。新着ランキングや数値をExport Scoutが勝手に取得・複製する機能ではありません。</p>
+</details>
+<details class="section-fold trend-section">
+<summary>公開資料から見つけた調査キーワード（6件）</summary>
+<p class="note">公式資料に関連する検索語の例。<strong>個別商品の売れ筋順位や利益が検証済みという意味ではありません。</strong></p>
+<div id="trendSeedList"></div>
+</details>
+<label for="trendTerm">ランキング・トレンドで気になった商品名をメモ</label>
+<div class="trend-actions"><input id="trendTerm" type="text" maxlength="120" autocomplete="off" placeholder="例：PSP-3000 限定カラー"><button id="trendAdd" type="button">調査待ちに追加</button></div>
+<p id="trendMessage" class="note" role="status">価格がまだ分からなくても商品名だけ保存できます。</p>
+<details class="section-fold trend-section" open><summary id="trendInboxCount">調査待ち 0件（実売・利益未確認）</summary>
+<p class="note">この端末内だけに保存されます。商品ごとの「価格調査へ」で①の検索欄に移動し、eBayと国内で相場を確認してから利益候補へ登録できます。</p>
+<div id="trendInboxList"></div><button id="trendExport" class="secondary" type="button">調査待ちリストをCSV保存</button>
+</details>
+</section>
 <section class="card"><h2>② ジャンル別リサーチ候補</h2><p class="note">定番の型番・商品カテゴリを調べるための固定候補です。据え置きゲームと携帯ゲームは分けています。各候補から3サイトの検索結果へ直接移動できます。売れ筋順位や実際の利益を示すものではありません。販売済みの成約価格と国内仕入れ相場を必ず比較してください。</p><label for="discoverGenre">表示するジャンル</label><select id="discoverGenre" class="genre-select"><option value="">ジャンルを選んで候補を表示</option><option value="据え置きゲーム">据え置きゲーム</option><option value="携帯ゲーム">携帯ゲーム</option><option value="フィルムカメラ">カメラ</option><option value="腕時計">腕時計</option><option value="トレカ">トレカ</option><option value="ホビー">ホビー</option><option value="all">すべて表示</option></select><p id="discoverCount" class="note">ジャンルを選ぶと候補が表示されます。</p><label class="checkline"><input id="hideReviewed" type="checkbox"> 調査済みの候補を隠す</label><p class="note">各候補を調べ終えたら「確認済みにする」を押せます。これは価格や売れ行きが検証済みという意味ではなく、検索作業の進捗メモです。</p><div id="discover" class="grid"></div><p id="discoverStatus" class="note">候補ごとの検索ボタンから、海外の成約例と国内の仕入れ価格を直接比較できます。検索結果は各サイトで確認してください。</p></section><section class="card"><h2>③ 海外成約価格の円換算</h2><p class="note">eBayで確認した成約価格を米ドルで入力すると、取得した参考為替レートで円換算します。送料込みの受取総額を入力してください。為替レートは無料の公開データから自動取得を試みます。取得できない場合は手入力できます。</p><div class="grid"><div><label for="usdPrice">eBay成約総額（USD）</label><input id="usdPrice" type="number" min="0" step="0.01" placeholder="例：65.00"></div><div><label for="usdRate">1 USD あたりの円（自動取得・手入力可）</label><input id="usdRate" type="number" min="0" step="0.01" placeholder="例：150"></div></div><div class="fx-info" aria-label="為替レートの取得情報">
 <div><small>更新状態</small><strong id="fxMode">取得中</strong></div>
 <div><small>取得元</small><strong id="fxSource">確認中</strong></div>
@@ -198,4 +242,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script></body></html>
