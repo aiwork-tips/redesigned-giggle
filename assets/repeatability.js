@@ -104,7 +104,9 @@ const edit=document.createElement('button');edit.type='button';edit.className='s
 edit.addEventListener('click',()=>{fill(row);$('repeatEditor').scrollIntoView({block:'start',behavior:'smooth'})});
 const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='削除';
 del.addEventListener('click',()=>{records=records.filter(x=>x.sku.toLowerCase()!==row.sku.toLowerCase());if(store()){render();stateMessage(row.sku+'の検証メモを削除したよ。')}});
-buttons.append(edit,del);
+const actual=document.createElement('button');actual.type='button';actual.className='secondary';actual.textContent='取引実績を記録';
+actual.addEventListener('click',()=>{if(typeof window.ExportScoutSalesOpen==='function')window.ExportScoutSalesOpen(row.sku)});
+buttons.append(edit,del,actual);
 for(const [label,url] of [['成約元',row.sourceSold],['仕入れ元',row.sourceBuy]]){
 if(url&&validURL(url)){const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=label;buttons.append(a)}
 }
