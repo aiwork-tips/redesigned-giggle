@@ -55,7 +55,7 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .trend-auto-actions a:focus-visible{outline:2px solid #246de0;outline-offset:2px}
 .trend-pick-type{display:inline-block;font-size:11px;font-weight:700;background:#eaf2fe;color:#174a82;border-radius:8px;padding:4px 7px;margin:0 0 6px}
 .trend-country{font-size:12px;color:#436581}
-</style></head><body><header><h1>Export Scout <small>v4.7</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+</style></head><body><header><h1>Export Scout <small>v4.8</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>海外トレンド・売れ筋発掘</h2>
@@ -71,6 +71,12 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 <p id="trendSignalStatus" class="note" role="status">海外のGoogleトレンド自動取得状況を確認中…</p>
 <p class="note">米国・英国・カナダ・豪州・台湾・香港の公式RSSを日次確認する設定。<strong>検索急増＝商品が売れた証拠ではありません。</strong> キーワードが商品候補と関連した場合にのみ表示します。</p>
 <div id="trendSignalList"></div>
+</div>
+<div class="trend-section">
+<h3 style="margin:4px 0 6px">海外ゲーム専門メディアで話題の商品</h3>
+<p id="newsSignalStatus" class="note" role="status">海外の専門サイトの記事を確認中…</p>
+<p class="note">Nintendo Life・Time Extensionの公開RSSから、日本のゲーム機・レトロゲーム関連の新着記事を調査。<strong>記事で言及されたことは購入実績や利益の証明ではありません。</strong></p>
+<div id="newsSignalList"></div>
 </div>
 <p class="note">海外で関心を集めている日本商品を探す入口。実売ランキング・検索急増・編集部の人気特集を混同せず、<strong>公式サイトの最新情報を直接開いて確認</strong>できます。週ごとの日本商品の実売順位を自動集計した画面ではありません。</p>
 <details class="section-fold trend-section">
@@ -264,4 +270,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/auto_picks.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
