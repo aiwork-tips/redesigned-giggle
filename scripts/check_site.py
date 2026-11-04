@@ -13,12 +13,14 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 5 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and four independent scripts")
+if html.count("</script>") != 6 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and five independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
     raise SystemExit("Missing separate trends viewer code")
+if not Path("assets/evergreen.js").is_file():
+    raise SystemExit("Missing repeatable sourcing discovery viewer")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -63,6 +65,7 @@ for field in ("autoPairsStatus", "autoPairsList"):
 
 subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
 subprocess.run(["node", "--check", "assets/trends.js"], check=True)
+subprocess.run(["node", "--check", "assets/evergreen.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -88,8 +91,14 @@ trend_pos = html.find('id="trendSignalStatus"')
 report_pos = html.find('id="trendAutoStatus"')
 if not (0 < news_pos < trend_pos < report_pos):
     raise SystemExit("Fresh overseas discovery must appear before archival report picks")
-if '海外からの商品候補を自動発掘' not in html:
-    raise SystemExit("Discovery-first home section missing")
+if '商品発掘｜定番候補＋海外トレンド' not in html:
+    raise SystemExit("Evergreen + trend discovery section missing")
+for field in ('evergreenDiscovery', 'evergreenStatus', 'evergreenList', 'evergreenMore', 'evergreenMoreLabel'):
+    if f'id="{field}"' not in html:
+        raise SystemExit('Evergreen research panel missing: ' + field)
+evergreen_pos = html.find('id="evergreenStatus"')
+if not (0 < evergreen_pos < news_pos < trend_pos < report_pos):
+    raise SystemExit('Evergreen leads must be above news and archival picks')
 
 
 with tempfile.TemporaryDirectory() as folder:
