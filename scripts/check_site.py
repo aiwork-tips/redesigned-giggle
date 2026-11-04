@@ -27,12 +27,19 @@ if missing:
 # Keep genre selection consolidated and exchange-rate provenance visible.
 if 'id="genres"' in html or html.count('id="discoverGenre"') != 1:
     raise SystemExit("Duplicate or missing genre selection UI")
-for field in ("fxMode", "fxSource", "fxUpdated", "fxFetched", "fxStatus"):
+for field in ("fxMode", "fxSource", "fxUpdated", "fxFetched", "fxNext", "fxAge", "fxStatus"):
     if f'id="{field}"' not in html:
         raise SystemExit("Missing FX provenance field: " + field)
 for old, new in (("③ ジャンル別リサーチ候補", "② ジャンル別リサーチ候補"),):
     if old in html or new not in html:
         raise SystemExit("Incorrect genre section numbering")
+
+if "https://www.exchangerate-api.com" not in html:
+    raise SystemExit("Missing required free-API attribution")
+if "./data/fx.json" in js:
+    raise SystemExit("Do not redistribute the free API rates through public GitHub JSON")
+if "time_next_update_utc" not in js:
+    raise SystemExit("Missing FX provider next-update source field")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
