@@ -24,6 +24,16 @@ missing = sorted(references - set(ids))
 if missing:
     raise SystemExit("JavaScript references missing DOM IDs: " + ", ".join(missing))
 
+# Keep genre selection consolidated and exchange-rate provenance visible.
+if 'id="genres"' in html or html.count('id="discoverGenre"') != 1:
+    raise SystemExit("Duplicate or missing genre selection UI")
+for field in ("fxMode", "fxSource", "fxUpdated", "fxFetched", "fxStatus"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing FX provenance field: " + field)
+for old, new in (("③ ジャンル別リサーチ候補", "② ジャンル別リサーチ候補"),):
+    if old in html or new not in html:
+        raise SystemExit("Incorrect genre section numbering")
+
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
     js_file.write_text(js, encoding="utf-8")
