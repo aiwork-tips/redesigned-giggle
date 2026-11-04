@@ -41,3 +41,5 @@ jobs:
         run: node tests/test_evergreen_ui.cjs
       - name: Test SKU-level repeat-sourcing evidence journal offline
         run: node tests/test_repeatability_ui.cjs
+      - name: Test actual purchase and completed-sale ledger offline
+        run: node tests/test_sales_ledger_ui.cjs
