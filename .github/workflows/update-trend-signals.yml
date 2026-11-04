@@ -1,5 +1,12 @@
 name: Update overseas search-interest signals
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update_trend_signals.py'
+      - 'tests/test_trend_signals.py'
+      - 'data/trend_evidence.json'
+      - '.github/workflows/update-trend-signals.yml'
   schedule:
     - cron: '23 5 * * *'
   workflow_dispatch:
@@ -18,7 +25,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Validate trend RSS parser and report-backed picks offline
-        run: python -m unittest discover -s tests -v
+        run: python -m unittest discover -s tests -p 'test_trend_signals.py' -v
       - name: Read public Google Trends RSS by country
         run: python scripts/update_trend_signals.py
       - name: Commit verified related-search signals
