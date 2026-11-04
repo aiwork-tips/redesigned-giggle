@@ -41,6 +41,11 @@ if "./data/fx.json" in js:
 if "time_next_update_utc" not in js:
     raise SystemExit("Missing FX provider next-update source field")
 
+if 'id="watchlistStatus"' not in html or "data/research_targets.json" not in js:
+    raise SystemExit("Missing editable eBay watchlist status integration")
+if "checkWatchlist();" not in js:
+    raise SystemExit("Watchlist status is not checked on page load")
+
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
     js_file.write_text(js, encoding="utf-8")
