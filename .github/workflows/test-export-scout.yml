@@ -37,3 +37,5 @@ jobs:
         run: node tests/test_auto_picks_ui.cjs
       - name: Test overseas specialist publisher RSS discovery offline
         run: node tests/test_overseas_news_ui.cjs
+      - name: Test repeatable-sourcing research catalog and shortlist offline
+        run: node tests/test_evergreen_ui.cjs
