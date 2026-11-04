@@ -13,10 +13,12 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 2 or html.count('<script src="./assets/opportunities.js">') != 1:
-    raise SystemExit("Expected one inline app script plus one independent opportunities script")
+if html.count("</script>") != 3 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1:
+    raise SystemExit("Expected one inline script and two independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
+if not Path("assets/trends.js").is_file():
+    raise SystemExit("Missing separate trends viewer code")
 
 start = html.index("<script>") + len("<script>")
 end = html.index("</script>", start)
@@ -56,6 +58,13 @@ for field in ("autoPairsStatus", "autoPairsList"):
         raise SystemExit("Missing paired-price viewer field: " + field)
 
 subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
+subprocess.run(["node", "--check", "assets/trends.js"], check=True)
+
+for field in ("trendDiscovery", "trendSeedList", "trendTerm", "trendAdd", "trendInboxList", "trendInboxCount", "trendExport", "trendMessage"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing trends discovery element: " + field)
+if "export-scout-items-v1" in Path("assets/trends.js").read_text(encoding="utf-8"):
+    raise SystemExit("Trend shortlist must not overwrite the main saved price records")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
