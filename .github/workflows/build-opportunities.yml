@@ -1,0 +1,39 @@
+name: Rebuild source-linked opportunity comparisons
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/completed_sales.json'
+      - 'data/domestic_offers.json'
+      - 'data/research_targets.json'
+      - 'scripts/build_opportunities.py'
+  schedule:
+    - cron: '27 4 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: export-scout-paired-evidence
+  cancel-in-progress: false
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate pricing contracts without network
+        run: python -m unittest discover -s tests -v
+      - name: Build source-linked pairs (fail-closed on missing evidence)
+        run: python scripts/build_opportunities.py
+      - name: Publish only changed paired data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/opportunity_pairs.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: rebuild source-linked price pairs"
+            git push
+          fi
