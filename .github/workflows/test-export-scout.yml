@@ -29,3 +29,5 @@ jobs:
         run: python scripts/check_site.py
       - name: Test FX UI behavior offline
         run: node tests/test_fx_ui.cjs
+      - name: Test source-linked opportunity viewer offline
+        run: node tests/test_opportunity_ui.cjs
