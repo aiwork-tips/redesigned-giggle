@@ -52,7 +52,7 @@ $('fxSource').textContent=source;
 $('fxUpdated').textContent=updated;
 $('fxFetched').textContent=fetched;
 $('fxNext').textContent=next;
-$('fxAge').textContent=updated&&updated!=='不明'&&updated!=='対象外'?updated.indexOf('（日本時間）')>=0?'表示された元データの日時を参照':updated:'不明';
+$('fxAge').textContent='確認中';
 $('fxFreshness').textContent=note||'';
 }
 function fxCacheRead(){
@@ -86,7 +86,7 @@ fxManual=true;fxRequestVersion++;
 if(fxTimer!==null){clearTimeout(fxTimer);fxTimer=null}
 $('refreshFX').disabled=false;
 const rate=Number($('usdRate').value),valid=$('usdRate').value!==''&&Number.isFinite(rate)&&rate>0;
-fxInfo(valid?'手入力':'手入力（未確定）','自分で入力','対象外',''+fxJST(Date.now()),'対象外','手入力','手入力値は自動取得したリアルタイムレートではありません。');
+fxInfo(valid?'手入力':'手入力（未確定）','自分で入力','対象外',fxJST(Date.now()),'対象外','手入力値は自動取得したリアルタイムレートではありません。');
 $('fxAge').textContent='対象外';
 $('fxStatus').textContent=valid?'手入力した参考レート：1 USD = '+rate.toFixed(3)+'円':'有効な為替レートを入力してください。';
 syncQuick();
