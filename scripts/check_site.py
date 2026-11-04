@@ -13,14 +13,16 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 6 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and five independent scripts")
+if html.count("</script>") != 7 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and six independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
     raise SystemExit("Missing separate trends viewer code")
 if not Path("assets/evergreen.js").is_file():
     raise SystemExit("Missing repeatable sourcing discovery viewer")
+if not Path("assets/repeatability.js").is_file():
+    raise SystemExit("Missing SKU-level sourcing evidence journal")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -66,6 +68,7 @@ for field in ("autoPairsStatus", "autoPairsList"):
 subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
 subprocess.run(["node", "--check", "assets/trends.js"], check=True)
 subprocess.run(["node", "--check", "assets/evergreen.js"], check=True)
+subprocess.run(["node", "--check", "assets/repeatability.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -100,6 +103,14 @@ evergreen_pos = html.find('id="evergreenStatus"')
 if not (0 < evergreen_pos < news_pos < trend_pos < report_pos):
     raise SystemExit('Evergreen leads must be above news and archival picks')
 
+
+for field in ("repeatabilityPanel", "repeatEditor", "repeatStatus", "repeatList", "repeatSku", "repeatSoldCount", "repeatUsd", "repeatCost", "repeatFx", "repeatSave", "repeatExport"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing SKU-level sourcing evidence field: " + field)
+if "export-scout-repeatability-v1" not in Path("assets/repeatability.js").read_text(encoding="utf-8"):
+    raise SystemExit("Repeatability records must use their own isolated storage key")
+if "export-scout-items-v1" in Path("assets/repeatability.js").read_text(encoding="utf-8"):
+    raise SystemExit("Repeatability journal must not modify historical saved price records")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
