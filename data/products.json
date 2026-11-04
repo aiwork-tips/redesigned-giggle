@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "generated_at": null,
+  "source": "not_configured",
+  "items": [],
+  "notice": "No verified product price feed is connected. Never treat this empty feed as live eBay or Mercari data."
+}
