@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const code=fs.readFileSync('assets/auto_picks.js','utf8');
 const reports=JSON.parse(fs.readFileSync('data/trend_evidence.json','utf8'));
-const empty=JSON.parse(fs.readFileSync('data/trend_signals.json','utf8'));
+const empty={schema_version:1,source:'not_checked',signal_type:'google_trends_related_keyword',generated_at:null,checked_regions:[],failed_regions:[],signals:[]};
 function element(tag='div'){
 return {tag,children:[],textContent:'',className:'',listeners:{},
 addEventListener(type,fn){this.listeners[type]=fn},
@@ -45,13 +45,24 @@ const signals={schema_version:1,generated_at:stamp,source:'google_trends_rss',
 signal_type:'google_trends_related_keyword',checked_regions:['TW'],failed_regions:[],
 signals:[{id:'beyblade_x_TW',product_id:'beyblade_x',name:'ベイブレードX',
 term:'Beyblade X Japanese limited',matched_query:'Beyblade X championship',
-region:'TW',observed_at:stamp,signal_type:'google_trends_related_keyword',
+region:'TW',observed_at:stamp,signal_type:'google_trends_related_keyword',evidence_class:'reported_crossborder_demand',
 source_url:'https://trends.google.com/trending?geo=TW'}]};
 const fresh=await start(reports,signals);
 assert.match(fresh.get('trendSignalStatus').textContent,/1件/);
 assert.equal(fresh.get('trendSignalList').children.length,1);
 assert.match(fresh.get('trendSignalList').children[0].children[2].textContent,/Beyblade X championship/);
-assert.match(fresh.get('trendSignalList').children[0].children[0].textContent,/販売実績ではない/);
+assert.match(fresh.get('trendSignalList').children[0].children[0].textContent,/越境取引レポート掲載商品/);
+
+const brands=JSON.parse(JSON.stringify(signals));
+brands.signals[0].id='nintendo_switch_TW';
+brands.signals[0].product_id='nintendo_switch';
+brands.signals[0].name='Nintendo Switch関連';
+brands.signals[0].term='Nintendo Switch Japan limited';
+brands.signals[0].matched_query='nintendo switch zelda ocarina of time';
+brands.signals[0].evidence_class='curated_brand_interest';
+const freshBrand=await start(reports,brands);
+assert.match(freshBrand.get('trendSignalList').children[0].children[0].textContent,/日本ブランド/);
+assert.match(freshBrand.get('trendSignalList').children[0].children[2].textContent,/zelda ocarina/);
 
 const fake=JSON.parse(JSON.stringify(reports));
 fake.picks[0].source_url='https://evil.test/pretend';
