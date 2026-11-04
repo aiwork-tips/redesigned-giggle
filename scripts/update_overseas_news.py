@@ -20,22 +20,45 @@ FEEDS = {
     "Time Extension": "https://www.timeextension.com/feeds/news",
 }
 PRODUCT_TERMS = (
-    ("Nintendo DS", r"\bnintendo ds\b|\bnds\b", "Nintendo DS console Japanese"),
-    ("Nintendo 3DS", r"\bnintendo 3ds\b|\b3ds\b", "Nintendo 3DS console Japanese"),
-    ("PSP", r"\bpsp\b|\bplaystation portable\b", "Sony PSP 3000 Japanese console"),
-    ("PS Vita", r"\b(ps vita|playstation vita)\b", "Sony PS Vita PCH-2000 Japanese"),
-    ("ゲームボーイ", r"\bgame[\s-]?boy\b|\bgame boy advance\b", "Nintendo Game Boy Advance SP Japanese"),
+    ("Nintendo 3DS", r"\bnintendo 3ds\b|\b3ds\b", "Nintendo 3DS Japanese"),
+    ("Nintendo DS", r"\bnintendo ds\b|\bnds\b", "Nintendo DS Japanese"),
+    ("PSP", r"\bpsp\b|\bplaystation portable\b", "Sony PSP Japanese"),
+    ("PS Vita", r"\b(ps vita|playstation vita)\b", "Sony PS Vita Japanese"),
+    ("ゲームボーイ", r"\bgame[\s-]?boy\b", "Nintendo Game Boy Japanese"),
     ("ゲームキューブ", r"\bgamecube\b", "Nintendo GameCube Japanese"),
-    ("NINTENDO64", r"\bnintendo 64\b|\bn64\b", "Nintendo 64 Japanese game"),
-    ("スーパーファミコン", r"\bsuper famicom\b|\bsnes\b", "Super Famicom Japanese game cartridge"),
+    ("NINTENDO64", r"\bnintendo 64\b|\bn64\b", "Nintendo 64 Japanese"),
+    ("スーパーファミコン", r"\bsuper famicom\b|\bsnes\b", "Super Famicom Japanese game"),
     ("NEOGEO", r"\bneo[\s-]?geo\b|\bneogeo\b", "SNK Neo Geo Japanese game"),
-    ("PCエンジン", r"\bpc engine\b|\bturbografx\b", "NEC PC Engine Japanese game"),
-    ("セガサターン", r"\bsega saturn\b", "Sega Saturn Japanese game"),
-    ("ドリームキャスト", r"\bdreamcast\b", "Sega Dreamcast Japanese game"),
+    ("PCエンジン", r"\bpc engine\b|\bturbografx\b", "NEC PC Engine Japanese"),
+    ("セガサターン", r"\bsega saturn\b", "Sega Saturn Japanese"),
+    ("ドリームキャスト", r"\bdreamcast\b", "Sega Dreamcast Japanese"),
     ("ファミコン", r"\bfamicom\b|\bnes\b", "Nintendo Famicom Japanese game"),
-    ("たまごっち", r"\btamagotchi\b", "Bandai Tamagotchi Japanese vintage"),
-    ("amiibo", r"\bamiibo\b", "Nintendo amiibo Japanese limited"),
+    ("たまごっち", r"\btamagotchi\b", "Bandai Tamagotchi Japanese"),
+    ("amiibo", r"\bamiibo\b", "Nintendo amiibo Japanese"),
 )
+
+
+def evidence_matched_search_term(label, headline, broad_term):
+    """Only narrow to a model *explicitly named* in the article headline."""
+    patterns = {
+        "PSP": (
+            (r"\bpsp[\s-]?3000\b", "Sony PSP 3000 Japanese"),
+            (r"\bpsp[\s-]?2000\b", "Sony PSP 2000 Japanese"),
+            (r"\bpsp[\s-]?1000\b", "Sony PSP 1000 Japanese"),
+        ),
+        "Nintendo DS": (
+            (r"\bnintendo ds lite\b|\bds lite\b", "Nintendo DS Lite Japanese"),
+        ),
+        "ゲームボーイ": (
+            (r"\bgame boy advance sp\b|\bgba sp\b", "Nintendo Game Boy Advance SP Japanese"),
+            (r"\bgame boy advance\b|\bgba\b", "Nintendo Game Boy Advance Japanese"),
+        ),
+    }
+    for regex, term in patterns.get(label, ()):
+        if re.search(regex, headline, re.IGNORECASE):
+            return term
+    return broad_term
+
 MAX_BYTES = 1_200_000
 
 
@@ -82,7 +105,7 @@ def parse_news_feed(raw, publisher, now=None):
                 findings.append({
                     "id": publisher.lower().replace(" ", "_") + "_" + str(len(findings)),
                     "product_name": label,
-                    "term": search_term,
+                    "term": evidence_matched_search_term(label, normalized, search_term),
                     "article_title": title.strip()[:180],
                     "article_url": link,
                     "publisher": publisher,
