@@ -1,0 +1,32 @@
+name: Update overseas search-interest signals
+on:
+  schedule:
+    - cron: '23 5 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: export-scout-overseas-trend-rss
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate trend RSS parser and report-backed picks offline
+        run: python -m unittest discover -s tests -v
+      - name: Read public Google Trends RSS by country
+        run: python scripts/update_trend_signals.py
+      - name: Commit verified related-search signals
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/trend_signals.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: update overseas related search trend signals"
+            git push
+          fi
