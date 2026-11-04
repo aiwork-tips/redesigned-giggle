@@ -33,3 +33,5 @@ jobs:
         run: node tests/test_opportunity_ui.cjs
       - name: Test verified trend links and local shortlist offline
         run: node tests/test_trends_ui.cjs
+      - name: Test report-backed picks and daily RSS display offline
+        run: node tests/test_auto_picks_ui.cjs
