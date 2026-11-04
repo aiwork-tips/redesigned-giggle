@@ -1,7 +1,8 @@
 {
   "schema_version": 1,
   "source": "not_connected",
-  "price_type": "evidence_paired_estimate_inputs",
+  "price_type": "historical_sale_vs_active_domestic_offer",
+  "generated_at": null,
   "items": [],
-  "notice": "No valid completed-sale-plus-domestic-offer pairs are available. This is NOT an automatic live profit ranking."
+  "notice": "No source-linked completed-sale and active domestic-offer evidence is connected. No automatic profit ranking is available."
 }
