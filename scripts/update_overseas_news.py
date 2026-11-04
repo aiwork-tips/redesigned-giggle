@@ -65,11 +65,14 @@ MAX_BYTES = 1_200_000
 def valid_article_link(link, publisher):
     if not isinstance(link, str) or len(link) > 500:
         return False
-    url = urlsplit(link)
-    host = urlsplit(FEEDS[publisher]).hostname
-    return (url.scheme == "https" and url.hostname == host
-            and not url.username and not url.password and url.port is None
-            and url.path.startswith("/news/"))
+    try:
+        url = urlsplit(link)
+        host = urlsplit(FEEDS[publisher]).hostname
+        return (url.scheme == "https" and url.hostname == host
+                and not url.username and not url.password and url.port is None
+                and url.path.startswith("/news/"))
+    except ValueError:
+        return False
 
 
 def parse_news_feed(raw, publisher, now=None):
@@ -166,7 +169,21 @@ def main():
         except Exception as exc:
             failed.append(publisher)
             print(f"{publisher}: feed unavailable ({type(exc).__name__})")
-    record = build_record(parsed, now, failed)
+    if parsed:
+        record = build_record(parsed, now, failed)
+    else:
+        # Report failed connectivity, not a false "0 products found" success.
+        record = {
+            "schema_version": 1,
+            "source": "unavailable",
+            "signal_type": "overseas_editorial_product_mention",
+            "generated_at": now.isoformat(),
+            "checked_sources": [],
+            "failed_sources": failed,
+            "articles": [],
+            "notice": "Both official publisher RSS checks failed. This does NOT mean there are no trending game-related products.",
+        }
+        print("WARNING: all overseas publisher RSS sources unavailable")
     OUTPUT.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Overseas editorial mentions: {len(record['articles'])}; publishers checked: {len(parsed)}")
 
