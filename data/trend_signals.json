@@ -1,10 +1,17 @@
 {
   "schema_version": 1,
-  "generated_at": null,
-  "source": "not_checked",
+  "generated_at": "2026-11-04T09:21:24.049335+00:00",
+  "source": "google_trends_rss",
   "signal_type": "google_trends_related_keyword",
-  "checked_regions": [],
+  "checked_regions": [
+    "US",
+    "GB",
+    "CA",
+    "AU",
+    "TW",
+    "HK"
+  ],
   "failed_regions": [],
   "signals": [],
-  "notice": "No verified live Google Trends RSS match has been checked yet. The historical report-backed product picks are displayed separately; search spikes are not sales."
+  "notice": "Related Google Trends search spikes, NOT Japanese-product sales rankings. Only named research candidates are matched; no eBay/Mercari data was retrieved."
 }
