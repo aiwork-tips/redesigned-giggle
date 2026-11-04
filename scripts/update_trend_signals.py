@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parent.parent
 EVIDENCE = ROOT / "data" / "trend_evidence.json"
+BRAND_TOPICS = ROOT / "data" / "trend_brand_watchlist.json"
 OUTPUT = ROOT / "data" / "trend_signals.json"
 REGIONS = ("US", "GB", "CA", "AU", "TW", "HK")
 ALIASES = {
@@ -71,8 +72,42 @@ def feed_items(xml_bytes, now=None):
     return titles
 
 
-def extract_signals(region_feed, evidence, now=None):
-    """Map a trending *keyword* to a research lead; never claim product sales."""
+def validated_brand_topics(data):
+    """Watch terms are research prompts, never evidence of a completed sale."""
+    if data is None:
+        return []
+    rows = data.get("topics")
+    if (data.get("schema_version") != 1
+            or data.get("document_type") != "japanese_brand_related_search_watchlist"
+            or not isinstance(rows, list) or not 1 <= len(rows) <= 100):
+        raise ValueError("Invalid brand-topic catalog")
+    seen = set()
+    validated = []
+    for x in rows:
+        if not isinstance(x, dict):
+            raise ValueError("Invalid topic entry")
+        ident, name, term, aliases = (x.get("id"), x.get("name"), x.get("term"), x.get("aliases"))
+        if (not isinstance(ident, str) or not re.fullmatch(r"[a-z0-9_]{3,45}", ident)
+                or ident in seen or not isinstance(name, str) or not name.strip()
+                or not isinstance(term, str) or not 2 <= len(term) <= 120
+                or not isinstance(x.get("enabled"), bool) or not isinstance(aliases, list)
+                or not 1 <= len(aliases) <= 10):
+            raise ValueError("Invalid or duplicate topic")
+        for pattern in aliases:
+            if not isinstance(pattern, str) or not 2 <= len(pattern) <= 100:
+                raise ValueError("Invalid alias pattern")
+            try:
+                re.compile(pattern, re.IGNORECASE)
+            except re.error as exc:
+                raise ValueError("Invalid search alias regex") from exc
+        seen.add(ident)
+        if x["enabled"]:
+            validated.append((ident, name, term, aliases))
+    return validated
+
+
+def extract_signals(region_feed, evidence, now=None, topics=None):
+    """Map official RSS search rises to *research prompts*, not product sales."""
     now = now or datetime.now(timezone.utc)
     picks = evidence.get("picks")
     if evidence.get("schema_version") != 1 or not isinstance(picks, list):
@@ -80,32 +115,38 @@ def extract_signals(region_feed, evidence, now=None):
     by_id = {x["id"]: x for x in picks}
     if set(ALIASES) - set(by_id):
         raise ValueError("Missing named research candidate")
-    results = []
-    seen = set()
+    watched = [(pid, by_id[pid]["name"], by_id[pid]["term"], patterns,
+                "reported_crossborder_demand") for pid, patterns in ALIASES.items()]
+    watched += [(pid, name, term, patterns, "curated_brand_interest")
+                for pid, name, term, patterns in validated_brand_topics(topics)]
+    ids = [x[0] for x in watched]
+    if len(ids) != len(set(ids)):
+        raise ValueError("Duplicate research signal IDs")
+    results, seen = [], set()
     for geo, items in region_feed.items():
         if geo not in REGIONS:
             raise ValueError("Unsupported region")
         for headline, published in items:
             normalized = headline.casefold()
-            for product_id, patterns in ALIASES.items():
+            for product_id, name, term, patterns, evidence_class in watched:
                 if not any(re.search(p, normalized, re.IGNORECASE) for p in patterns):
                     continue
                 key = (product_id, geo)
                 if key in seen:
                     continue
                 seen.add(key)
-                product = by_id[product_id]
                 results.append({
                     "id": product_id + "_" + geo,
                     "product_id": product_id,
-                    "name": product["name"],
-                    "term": product["term"],
+                    "name": name,
+                    "term": term,
                     "matched_query": headline,
                     "region": geo,
                     "observed_at": published.isoformat(),
                     "signal_type": "google_trends_related_keyword",
+                    "evidence_class": evidence_class,
                     "source_url": "https://trends.google.com/trending?geo=" + geo,
-                    "note": "A related search term is trending in this region, NOT proof this specific Japanese product is selling.",
+                    "note": "A related search term was rising; this does NOT prove these Japanese goods sold or will sell.",
                 })
     return sorted(results, key=lambda x: x["observed_at"], reverse=True)[:40]
 
@@ -123,11 +164,11 @@ def retrieve_region(geo):
     return raw
 
 
-def build_record(feeds, evidence, now=None, failed=()):
+def build_record(feeds, evidence, now=None, failed=(), topics=None):
     now = now or datetime.now(timezone.utc)
     if not feeds:
         raise ValueError("No country RSS source verified; preserve previous data")
-    signals = extract_signals(feeds, evidence, now)
+    signals = extract_signals(feeds, evidence, now, topics)
     return {
         "schema_version": 1,
         "generated_at": now.isoformat(),
@@ -136,13 +177,14 @@ def build_record(feeds, evidence, now=None, failed=()):
         "checked_regions": list(feeds),
         "failed_regions": list(failed),
         "signals": signals,
-        "notice": "Related Google Trends search spikes, NOT Japanese-product sales rankings. Only named research candidates are matched; no eBay/Mercari data was retrieved.",
+        "notice": "Related Google Trends searches from reported cross-border topics and curated Japan-origin brand watch terms. NOT product sales or current bestseller rankings.",
     }
 
 
 def main():
     now = datetime.now(timezone.utc)
     evidence = json.loads(EVIDENCE.read_text(encoding="utf-8"))
+    brand_topics = json.loads(BRAND_TOPICS.read_text(encoding="utf-8"))
     feeds, failed = {}, []
     for geo in REGIONS:
         try:
@@ -152,7 +194,7 @@ def main():
         except Exception as exc:
             failed.append(geo)
             print(f"Google Trends {geo}: unavailable ({type(exc).__name__})")
-    result = build_record(feeds, evidence, now, failed)
+    result = build_record(feeds, evidence, now, failed, brand_topics)
     OUTPUT.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Research signals: {len(result['signals'])}; countries checked: {len(feeds)}; failed: {len(failed)}")
 
