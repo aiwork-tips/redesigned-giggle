@@ -67,13 +67,14 @@ function fill(row){
 $('repeatCategory').value=row?.category||'';
 $('repeatSku').value=row?.sku||'';
 for(const [field,key] of [['repeatSoldCount','soldCount'],['repeatActiveCount','activeCount'],['repeatUsd','usd'],['repeatCost','cost'],['repeatShip','ship'],['repeatFee','fee'],['repeatOther','other'],['repeatFx','fx'],['repeatTarget','minProfit']]){
-$(field).value=row&&row[key]!==null&&row[key]!==undefined?row[key]:({'repeatFee':14,'repeatTarget':2000,'repeatShip':1800,'repeatOther':0}[field]??'');
+const defaults={'repeatFee':14,'repeatTarget':2000,'repeatShip':1800,'repeatOther':0};
+$(field).value=row&&row[key]!==null&&row[key]!==undefined?row[key]:(defaults[field]??'');
 }
-if(!row){
+if(!row||row.fx===undefined||row.fx===null){
 const current=num($('usdRate').value);if(current!==null&&Number.isFinite(current)&&current>0)$('repeatFx').value=current;
-const currentShip=num($('ship').value);if(currentShip!==null&&Number.isFinite(currentShip)&&currentShip>=0)$('repeatShip').value=currentShip;
-const currentFee=num($('rate').value);if(currentFee!==null&&Number.isFinite(currentFee)&&currentFee>=0)$('repeatFee').value=currentFee;
-const currentOther=num($('other').value);if(currentOther!==null&&Number.isFinite(currentOther)&&currentOther>=0)$('repeatOther').value=currentOther;
+if(!row||row.ship===undefined){const currentShip=num($('ship').value);if(currentShip!==null&&Number.isFinite(currentShip)&&currentShip>=0)$('repeatShip').value=currentShip}
+if(!row||row.fee===undefined){const currentFee=num($('rate').value);if(currentFee!==null&&Number.isFinite(currentFee)&&currentFee>=0)$('repeatFee').value=currentFee}
+if(!row||row.other===undefined){const currentOther=num($('other').value);if(currentOther!==null&&Number.isFinite(currentOther)&&currentOther>=0)$('repeatOther').value=currentOther}
 }
 $('repeatSourcing').value=row?.sourcing||'未確認';
 $('repeatSoldUrl').value=row?.sourceSold||'';
@@ -113,7 +114,12 @@ card.append(title,badge,sub,estimate,proof,buttons);root.append(card);
 window.ExportScoutRepeatabilityOpen=(name,query)=>{
 const key=clean(name),term=clean(query);
 const match=records.find(x=>x.sku.toLowerCase()===key.toLowerCase()||x.sku.toLowerCase()===term.toLowerCase());
-fill(match||{sku:key||term,category:term});
+if(match)fill(match);
+else{
+fill(null);
+$('repeatSku').value=key||term;
+$('repeatCategory').value=term;
+}
 $('repeatEditor').scrollIntoView({block:'start',behavior:'smooth'});
 };
 $('repeatSave').addEventListener('click',()=>{
