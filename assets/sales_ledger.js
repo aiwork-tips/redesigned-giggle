@@ -151,6 +151,7 @@ function render(){
     del.addEventListener('click',()=>removeRow(row.id));
     actions.append(edit,del);box.append(actions);$('salesLedgerRecords').append(box);
   }
+  if(typeof window.ExportScoutSalesRankingRefresh==='function')window.ExportScoutSalesRankingRefresh();
 }
 function editRow(id){
   const row=records.find(x=>x.id===id);if(!row)return;
