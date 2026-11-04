@@ -10,10 +10,14 @@ return link.protocol==='https:'&&!link.username&&!link.password&&!link.port&&lin
 }catch(e){return false}
 }
 function validate(data){
-if(!data||data.schema_version!==1||data.signal_type!=='overseas_editorial_product_mention'||!['not_checked','publisher_rss'].includes(data.source)||!Array.isArray(data.articles)||data.articles.length>24)throw Error('配信データの形式が不正');
+if(!data||data.schema_version!==1||data.signal_type!=='overseas_editorial_product_mention'||!['not_checked','publisher_rss','unavailable'].includes(data.source)||!Array.isArray(data.articles)||data.articles.length>24)throw Error('配信データの形式が不正');
 if(data.source==='not_checked'){
 if(data.articles.length)throw Error('未確認データの不一致');
 return null;
+}
+if(data.source==='unavailable'){
+if(data.articles.length||!Array.isArray(data.failed_sources)||!data.failed_sources.length||!data.failed_sources.every(x=>allowed[x]))throw Error('取得失敗データに不備');
+return 'unavailable';
 }
 const published=Date.parse(data.generated_at);
 if(!Number.isFinite(published)||published>Date.now()+3600000||Date.now()-published>3*86400000)throw Error('RSSの確認結果が3日以上前');
@@ -46,6 +50,9 @@ if(!response.ok)throw Error('情報取得に失敗');
 const data=await response.json(),articles=validate(data);root.replaceChildren();
 if(articles===null){
 status.textContent='海外専門記事の自動チェック：実行結果未確認。日次RSS取得の仕組みは追加済み。';return;
+}
+if(articles==='unavailable'){
+status.textContent='海外専門メディアのRSS取得失敗：'+data.failed_sources.join('・')+'。商品が存在しないという意味ではありません。';return;
 }
 status.textContent='記事確認：'+new Date(data.generated_at).toLocaleDateString('ja-JP')+' ／ 新着の商品関連トピック：'+articles.length+'件（'+data.checked_sources.join('・')+'）。取引数・利益は未確認。';
 if(!articles.length){const p=document.createElement('p');p.className='note';p.textContent='今回の新着RSSに日本の商品調査に使える関連キーワードは見つかりませんでした。';root.append(p)}
