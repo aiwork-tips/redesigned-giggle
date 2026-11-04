@@ -67,7 +67,21 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .repeat-verdict{display:inline-block;font-size:12px;background:#e5eefb;color:#234b7a;padding:5px 8px;border-radius:8px;margin-top:6px}
 .repeat-editor summary{padding:10px 4px}
 @media(max-width:530px){.repeat-fields{grid-template-columns:1fr}}
-</style></head><body><header><h1>Export Scout <small>v5.1</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+
+.sales-ledger-panel{margin-top:14px;border:1px solid #c9daf0;border-radius:13px;background:#f8fbff;padding:12px}
+.sales-ledger-panel h4{margin:16px 0 8px;color:#244c7f;font-size:14px}
+.sales-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+.sales-summary-cell{border:1px solid #d8e5f5;border-radius:10px;background:#fff;padding:9px;min-width:0}
+.sales-summary-cell small{display:block;color:#526a83;font-size:11px}
+.sales-summary-cell strong{display:block;margin-top:5px;font-size:16px;overflow-wrap:anywhere;color:#193e69}
+.sales-record,.sales-group{border-top:1px solid #d8e5f5;padding:11px 0}
+.sales-record strong,.sales-group strong{display:block}
+.sales-record p,.sales-group p{margin:5px 0}
+.sales-ledger-panel .trend-auto-actions{display:flex;flex-wrap:wrap;gap:8px}
+.sales-ledger-panel #ledgerSoldFields[hidden]{display:none}
+.sales-ledger-panel #ledgerSoldFields{grid-column:1/-1}
+@media(max-width:480px){.sales-summary{grid-template-columns:1fr 1fr}}
+</style></head><body><header><h1>Export Scout <small>v5.2</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>商品発掘｜定番候補＋海外トレンド</h2>
@@ -107,6 +121,38 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 <p id="repeatFeedback" class="note" role="status">検証メモは端末内に保存。スマホのデータ削除に備え、CSVを控えてね。</p>
 <div id="repeatList"></div>
 <button id="repeatExport" type="button" class="secondary">検証メモをCSV保存</button>
+</div>
+<div class="sales-ledger-panel" id="salesLedgerPanel">
+<h3 style="margin:4px 0 8px">実際の仕入れ・販売記録</h3>
+<p class="note">予想利益とは別に、<strong>実際の1点ごとの仕入れ・売却</strong>を記録するよ。まだ売れていない商品は在庫として扱い、利益に数えません。同じ型番を繰り返し売った実績も集計します。</p>
+<div id="salesLedgerSummary" class="sales-summary"></div>
+<p id="salesLedgerStatus" class="note" role="status">取引記録を読み込み中…</p>
+<details class="section-fold" id="salesLedgerEditor">
+<summary>1点の仕入れ・売却を記録／編集</summary>
+<div class="repeat-fields">
+<div class="repeat-field repeat-wide"><label for="ledgerSku">商品型番・状態（同じ仕様で統一）</label><input id="ledgerSku" type="text" maxlength="180" placeholder="例：PSP-3000 黒 動作確認済"></div>
+<div class="repeat-field"><label for="ledgerPurchaseDate">仕入れ日</label><input id="ledgerPurchaseDate" type="date"></div>
+<div class="repeat-field"><label for="ledgerPurchaseCost">実際の仕入れ総額（税込・送料込、円）</label><input id="ledgerPurchaseCost" type="number" min="0" max="10000000" step="1" inputmode="numeric" placeholder="例：5000"></div>
+<div class="repeat-field"><label for="ledgerState">現在の状態</label><select id="ledgerState" class="genre-select"><option value="held">未売却・在庫</option><option value="sold">売却済み</option></select></div>
+<div id="ledgerSoldFields" class="repeat-wide repeat-fields" hidden>
+<div class="repeat-field"><label for="ledgerSaleDate">実際の売却日</label><input id="ledgerSaleDate" type="date"></div>
+<div class="repeat-field"><label for="ledgerPayout">実際の受取額（円、eBay手数料・換金後）</label><input id="ledgerPayout" type="number" min="0" max="100000000" step="1" inputmode="numeric" placeholder="例：12500"></div>
+<div class="repeat-field"><label for="ledgerShipping">受取額から引かれていない海外送料（円）</label><input id="ledgerShipping" type="number" min="0" max="10000000" step="1" inputmode="numeric" placeholder="例：1800、差引済みなら0"></div>
+<div class="repeat-field"><label for="ledgerOther">受取額から引かれていないその他費用（円）</label><input id="ledgerOther" type="number" min="0" max="10000000" step="1" inputmode="numeric" placeholder="梱包代など、なければ0"></div>
+<div class="repeat-field repeat-wide"><label for="ledgerSaleLink">販売記録のURL（任意・端末のみ保存）</label><input id="ledgerSaleLink" type="url" maxlength="500" placeholder="https://www.ebay.com/..."></div>
+</div>
+<div class="repeat-field repeat-wide"><label for="ledgerPurchaseLink">仕入れた商品のURL（任意）</label><input id="ledgerPurchaseLink" type="url" maxlength="500" placeholder="https://jp.mercari.com/..."></div>
+<div class="repeat-field repeat-wide"><label for="ledgerNotes">メモ（状態・欠品・返品など）</label><input id="ledgerNotes" type="text" maxlength="300" placeholder="例：充電器付、動作確認済"></div>
+</div>
+<p class="note">利益＝実受取額−仕入れ総額−受取額から未控除の海外送料−その他費用。<strong>送料や手数料を二重に引かないよう注意。</strong> 輸入関税・税務上の利益や返品調整などを網羅する会計帳簿ではありません。</p>
+<div class="buttons"><button id="ledgerSave" type="button">仕入れ・販売記録を保存</button><button id="ledgerNew" type="button" class="secondary">新しく記録</button></div>
+</details>
+<p id="salesLedgerMessage" class="note" role="status">端末内に保存。複数人・別端末との自動共有はありません。</p>
+<h4>商品別の販売・利益実績</h4>
+<div id="salesLedgerBySku"></div>
+<details class="section-fold"><summary>売却月別の利益を見る</summary><div id="salesLedgerMonths"></div></details>
+<details class="section-fold"><summary>仕入れ・売却の各記録を編集</summary><div id="salesLedgerRecords"></div></details>
+<button id="ledgerExport" type="button" class="secondary">取引実績をCSVバックアップ</button>
 </div>
 </div>
 <div class="trend-section">
@@ -320,4 +366,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
