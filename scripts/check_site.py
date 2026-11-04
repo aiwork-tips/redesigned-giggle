@@ -13,8 +13,8 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 10 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and nine independent scripts")
+if html.count("</script>") != 11 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/migration_restore.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and ten independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
@@ -29,6 +29,8 @@ if not Path("assets/sales_rankings.js").is_file():
     raise SystemExit("Missing actual-sales rankings module")
 if not Path("assets/migration_backup.js").is_file():
     raise SystemExit("Missing migration backup module")
+if not Path("assets/migration_restore.js").is_file():
+    raise SystemExit("Missing safe migration restore module")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -78,6 +80,7 @@ subprocess.run(["node", "--check", "assets/repeatability.js"], check=True)
 subprocess.run(["node", "--check", "assets/sales_ledger.js"], check=True)
 subprocess.run(["node", "--check", "assets/sales_rankings.js"], check=True)
 subprocess.run(["node", "--check", "assets/migration_backup.js"], check=True)
+subprocess.run(["node", "--check", "assets/migration_restore.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -138,6 +141,16 @@ if "localStorage.setItem" in Path("assets/sales_rankings.js").read_text(encoding
     raise SystemExit("Actual sales rankings must not rewrite existing transaction records")
 if "localStorage.setItem" in Path("assets/migration_backup.js").read_text(encoding="utf-8"):
     raise SystemExit("Migration backup export must not rewrite existing storage records")
+
+for field in ("migrationRestorePanel", "migrationRestoreFile", "migrationRestoreMessage", "migrationRestorePreview", "migrationRestoreApprove", "migrationRestoreApply"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing guarded local JSON restoration control: " + field)
+restore_source = Path("assets/migration_restore.js").read_text(encoding="utf-8")
+for needle in ("invalid_json_keys", "migrationRestoreApprove", "localStorage.getItem", "localStorage.removeItem", "supported"):
+    if needle != "supported" and needle not in restore_source:
+        raise SystemExit("Safe restore validation/rollback check missing: " + needle)
+if "fetch(" in restore_source:
+    raise SystemExit("Restore must stay entirely local; no uploads")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
