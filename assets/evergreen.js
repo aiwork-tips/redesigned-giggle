@@ -42,6 +42,9 @@ actionLink('eBay成約例','https://www.ebay.com/sch/i.html?LH_Sold=1&LH_Complet
 actionLink('メルカリ','https://jp.mercari.com/search?keyword='+encodeURIComponent(x.query)),
 actionLink('ヤフオク','https://auctions.yahoo.co.jp/search/search?p='+encodeURIComponent(x.query)),
 actionLink('根拠レポート',x.source_url));
+const verify=document.createElement('button');verify.type='button';verify.className='secondary';verify.textContent='この商品を検証';
+verify.addEventListener('click',()=>{if(typeof window.ExportScoutRepeatabilityOpen==='function')window.ExportScoutRepeatabilityOpen(x.name,x.query)});
+actions.append(verify);
 card.append(tag,title,meta,why,caution,sourcing,actions);
 return card;
 }
