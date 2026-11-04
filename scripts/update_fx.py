@@ -4,7 +4,6 @@ import json
 import math
 import pathlib
 import urllib.request
-from datetime import datetime, timezone
 
 URL = "https://open.er-api.com/v6/latest/USD"
 target = pathlib.Path("data/fx.json")
@@ -22,7 +21,6 @@ record = {
     "rate": round(rate, 6),
     "source": URL,
     "source_updated_at": updated,
-    "fetched_at": datetime.now(timezone.utc).isoformat(),
     "kind": "reference_rate_not_executable_quote",
 }
 target.parent.mkdir(parents=True, exist_ok=True)
