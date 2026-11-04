@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "source": "not_connected",
+  "price_type": "domestic_delivered_asking_price_jpy",
+  "items": [],
+  "notice": "No authorized domestic sourcing-price feed is connected. These must be active, source-linked offers including domestic delivery charges."
+}
