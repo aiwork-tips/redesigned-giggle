@@ -146,8 +146,8 @@ for field in ("migrationRestorePanel", "migrationRestoreFile", "migrationRestore
     if f'id="{field}"' not in html:
         raise SystemExit("Missing guarded local JSON restoration control: " + field)
 restore_source = Path("assets/migration_restore.js").read_text(encoding="utf-8")
-for needle in ("invalid_json_keys", "migrationRestoreApprove", "localStorage.getItem", "localStorage.removeItem", "supported"):
-    if needle != "supported" and needle not in restore_source:
+for needle in ("invalid_json_keys", "migrationRestoreApprove", "localStorage.getItem", "localStorage.removeItem"):
+    if needle not in restore_source:
         raise SystemExit("Safe restore validation/rollback check missing: " + needle)
 if "fetch(" in restore_source:
     raise SystemExit("Restore must stay entirely local; no uploads")
