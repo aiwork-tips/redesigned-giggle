@@ -27,9 +27,33 @@ class SpecialistRssTests(unittest.TestCase):
                                  "Time Extension", NOW)
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0]["product_name"], "ゲームボーイ")
-        self.assertIn("Game Boy Advance SP", result[0]["term"])
+        self.assertEqual(result[0]["term"], "Nintendo Game Boy Japanese")
         self.assertEqual(result[0]["signal_type"], "overseas_editorial_product_mention")
         self.assertNotIn("sold_price", result[0])
+
+    def test_specific_model_only_when_named_in_headline(self):
+        psp = parse_news_feed(rss("Rare Japanese PSP games spotted"),
+                              "Time Extension", NOW)[0]
+        self.assertEqual(psp["term"], "Sony PSP Japanese")
+        psp3000 = parse_news_feed(rss("Sony PSP-3000 console revisited"),
+                                  "Time Extension", NOW)[0]
+        self.assertEqual(psp3000["term"], "Sony PSP 3000 Japanese")
+        ds = parse_news_feed(rss("Nintendo DS game collection"),
+                             "Time Extension", NOW)[0]
+        self.assertEqual(ds["term"], "Nintendo DS Japanese")
+        lite = parse_news_feed(rss("Nintendo DS Lite found in Japan"),
+                               "Time Extension", NOW)[0]
+        self.assertEqual(lite["term"], "Nintendo DS Lite Japanese")
+        gba = parse_news_feed(rss("Game Boy Advance SP collector edition"),
+                              "Time Extension", NOW)[0]
+        self.assertEqual(gba["term"], "Nintendo Game Boy Advance SP Japanese")
+
+    def test_generic_editorial_mention_is_not_sold_data(self):
+        psp = parse_news_feed(rss("PSP homebrew update arrives"),
+                              "Time Extension", NOW)[0]
+        self.assertEqual(psp["signal_type"], "overseas_editorial_product_mention")
+        self.assertNotIn("sold_count", psp)
+        self.assertNotIn("asking_price", psp)
 
     def test_nintendo_life_parses_amiibo(self):
         data = rss("New Japanese amiibo edition", site="www.nintendolife.com")
