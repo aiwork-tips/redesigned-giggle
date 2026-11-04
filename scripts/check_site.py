@@ -6,21 +6,23 @@ import subprocess
 import tempfile
 
 html = Path("index.html").read_text(encoding="utf-8")
-closing = '<script src="./assets/auto_picks.js"></script></body></html>'
+closing = '<script src="./assets/overseas_news.js"></script></body></html>'
 if not html.rstrip().endswith(closing):
     raise SystemExit("Unexpected document ending")
 for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 4 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1:
-    raise SystemExit("Expected one inline script and three independent scripts")
+if html.count("</script>") != 5 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and four independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
     raise SystemExit("Missing separate trends viewer code")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
+if not Path("assets/overseas_news.js").is_file():
+    raise SystemExit("Missing overseas publisher RSS frontend")
 
 start = html.index("<script>") + len("<script>")
 end = html.index("</script>", start)
@@ -62,6 +64,7 @@ for field in ("autoPairsStatus", "autoPairsList"):
 subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
 subprocess.run(["node", "--check", "assets/trends.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
+subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
 for field in ("trendDiscovery", "trendSeedList", "trendTerm", "trendAdd", "trendInboxList", "trendInboxCount", "trendExport", "trendMessage"):
     if f'id="{field}"' not in html:
@@ -74,6 +77,10 @@ for field in ("trendAutoStatus", "trendAutoList", "trendAutoMore", "trendAutoMor
         raise SystemExit("Missing source-backed pick or trending signal section: " + field)
 if "export-scout-items-v1" in Path("assets/auto_picks.js").read_text(encoding="utf-8"):
     raise SystemExit("Auto-picks must not overwrite manually saved price records")
+
+for field in ("newsSignalStatus", "newsSignalList"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing overseas publisher RSS panel: " + field)
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
