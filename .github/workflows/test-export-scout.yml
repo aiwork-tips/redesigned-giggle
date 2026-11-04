@@ -27,3 +27,5 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate frontend document and JavaScript
         run: python scripts/check_site.py
+      - name: Test FX UI behavior offline
+        run: node tests/test_fx_ui.cjs
