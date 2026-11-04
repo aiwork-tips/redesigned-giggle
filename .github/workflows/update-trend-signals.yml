@@ -6,6 +6,7 @@ on:
       - 'scripts/update_trend_signals.py'
       - 'tests/test_trend_signals.py'
       - 'data/trend_evidence.json'
+      - 'data/trend_brand_watchlist.json'
       - '.github/workflows/update-trend-signals.yml'
   schedule:
     - cron: '23 5 * * *'
