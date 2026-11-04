@@ -61,6 +61,35 @@ def evidence_matched_search_term(label, headline, broad_term):
 
 MAX_BYTES = 1_200_000
 
+# A headline mentioning a console can be about software emulation or unrelated
+# celebrity news. Only surface tangible collecting / product-shopping leads.
+NON_PRODUCT_CONTEXT = (
+    r"\bemulator\b", r"\bchiptune synth\b", r"\bhomebrew\b",
+    r"\bfan[\s-]?translation\b", r"\bfan[\s-]?made\b",
+    r"\bvoice actor\b", r"\bcast features\b",
+    r"\bhomage\b", r"\byou can play it\b", r"\bports?\b",
+    r"\bremake\b", r"\bremaster\b", r"\brecomp\b",
+    r"\bmodding\b", r"\bmod\b", r"\bconcept video\b",
+)
+PHYSICAL_PRODUCT_CONTEXT = (
+    r"\brare\b", r"\bcollector(?:'s|s)?\b", r"\bcollectible\b",
+    r"\bboxed\b", r"\bcartridges?\b", r"\bcarts?\b",
+    r"\bvintage\b", r"\bphysical\b", r"\bauction\b",
+    r"\blimited\b", r"\bspecial edition\b", r"\bedition\b",
+    r"\bprices?\b", r"\bfor sale\b", r"\brestock\b",
+    r"\bmarketplace\b", r"\bplush\b", r"\bfigures?\b",
+    r"\bconsole\b", r"\bhandheld\b", r"\baccessories\b",
+    r"\bcollection\b", r"\bfound\b",
+)
+
+
+def looks_like_physical_product_lead(headline):
+    """Conservative pre-filter: editorial interest is NOT verified buyer demand."""
+    if any(re.search(p, headline, re.IGNORECASE) for p in NON_PRODUCT_CONTEXT):
+        return False
+    return any(re.search(p, headline, re.IGNORECASE) for p in PHYSICAL_PRODUCT_CONTEXT)
+
+
 
 def valid_article_link(link, publisher):
     if not isinstance(link, str) or len(link) > 500:
@@ -103,6 +132,8 @@ def parse_news_feed(raw, publisher, now=None):
         if not now - timedelta(days=7) <= published <= now + timedelta(hours=1):
             continue
         normalized = title.casefold()
+        if not looks_like_physical_product_lead(normalized):
+            continue  # e.g. emulator and voice-actor articles are not resale leads
         for label, pattern, search_term in PRODUCT_TERMS:
             if re.search(pattern, normalized, flags=re.IGNORECASE):
                 findings.append({
