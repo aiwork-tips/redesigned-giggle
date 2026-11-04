@@ -13,8 +13,8 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 7 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and six independent scripts")
+if html.count("</script>") != 8 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and seven independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
@@ -23,6 +23,8 @@ if not Path("assets/evergreen.js").is_file():
     raise SystemExit("Missing repeatable sourcing discovery viewer")
 if not Path("assets/repeatability.js").is_file():
     raise SystemExit("Missing SKU-level sourcing evidence journal")
+if not Path("assets/sales_ledger.js").is_file():
+    raise SystemExit("Missing private actual-sales ledger")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -69,6 +71,7 @@ subprocess.run(["node", "--check", "assets/opportunities.js"], check=True)
 subprocess.run(["node", "--check", "assets/trends.js"], check=True)
 subprocess.run(["node", "--check", "assets/evergreen.js"], check=True)
 subprocess.run(["node", "--check", "assets/repeatability.js"], check=True)
+subprocess.run(["node", "--check", "assets/sales_ledger.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -111,6 +114,14 @@ if "export-scout-repeatability-v1" not in Path("assets/repeatability.js").read_t
     raise SystemExit("Repeatability records must use their own isolated storage key")
 if "export-scout-items-v1" in Path("assets/repeatability.js").read_text(encoding="utf-8"):
     raise SystemExit("Repeatability journal must not modify historical saved price records")
+
+for field in ("salesLedgerPanel", "salesLedgerSummary", "salesLedgerStatus", "salesLedgerEditor", "salesLedgerBySku", "salesLedgerMonths", "salesLedgerRecords", "ledgerSku", "ledgerPurchaseDate", "ledgerPurchaseCost", "ledgerState", "ledgerSoldFields", "ledgerSaleDate", "ledgerPayout", "ledgerShipping", "ledgerOther", "ledgerSave", "ledgerExport"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing actual-sales ledger UI: " + field)
+if "export-scout-sales-ledger-v1" not in Path("assets/sales_ledger.js").read_text(encoding="utf-8"):
+    raise SystemExit("Actual-sales journal must use a separate local storage key")
+if "export-scout-items-v1" in Path("assets/sales_ledger.js").read_text(encoding="utf-8"):
+    raise SystemExit("Actual-sales journal must not alter old price candidates")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
