@@ -75,13 +75,14 @@ if(!Array.isArray(data.checked_regions)||!data.checked_regions.length||data.chec
 const seen=new Set();
 return data.signals.map(s=>{
 const at=Date.parse(s.observed_at);
-if(!s||typeof s.id!=='string'||seen.has(s.id)||typeof s.term!=='string'||!s.term.trim()||typeof s.name!=='string'||!s.name.trim()||!regions[s.region]||typeof s.matched_query!=='string'||s.signal_type!=='google_trends_related_keyword'||!Number.isFinite(at)||at>Date.now()+3600000||Date.now()-at>7*86400000||!validLink(s.source_url,new Set(['trends.google.com'])))throw Error('個別の急上昇情報に不備');
+if(!s||typeof s.id!=='string'||seen.has(s.id)||typeof s.term!=='string'||!s.term.trim()||typeof s.name!=='string'||!s.name.trim()||!regions[s.region]||typeof s.matched_query!=='string'||s.signal_type!=='google_trends_related_keyword'||(s.evidence_class!==undefined&&!['reported_crossborder_demand','curated_brand_interest'].includes(s.evidence_class))||!Number.isFinite(at)||at>Date.now()+3600000||Date.now()-at>7*86400000||!validLink(s.source_url,new Set(['trends.google.com'])))throw Error('個別の急上昇情報に不備');
 seen.add(s.id);return s;
 });
 }
 function makeSignal(s){
 const card=document.createElement('div');card.className='trend-auto-card';
-card.append(textElement('span','海外検索の急上昇（販売実績ではない）','trend-pick-type'),
+const kind=s.evidence_class==='curated_brand_interest'?'日本ブランド・作品名の検索急上昇（実売未確認）':'過去の越境取引レポート掲載商品に関連する検索急上昇';
+card.append(textElement('span',kind,'trend-pick-type'),
 textElement('strong',s.name),
 textElement('p',regions[s.region]+' ／ 関連して検索急増したキーワード：「'+s.matched_query+'」','note'),
 textElement('p','Googleトレンド観測日時：'+jst(s.observed_at)+'（日本時間）。この日本商品の購入件数・利益は未確認。','note'),
