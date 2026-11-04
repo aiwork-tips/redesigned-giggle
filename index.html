@@ -96,7 +96,15 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .migration-backup-panel{margin-top:14px;border-top:1px solid #d5e1f1}
 .migration-backup-panel .note{overflow-wrap:anywhere}
 @media(max-width:420px){.sales-ranking-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-</style></head><body><header><h1>Export Scout <small>v5.3</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+
+.migration-restore-panel{border-top:1px solid #d7e5f3;margin-top:14px;padding-top:14px}
+.migration-restore-panel h4{margin:2px 0 6px;font-size:14px;color:#214873}
+.migration-restore-panel input[type="file"]{width:100%;max-width:100%;padding:10px}
+.migration-restore-preview{background:#fff;border:1px solid #dce6f2;border-radius:10px;margin:10px 0;padding:6px 10px;overflow-wrap:anywhere}
+.migration-restore-preview:empty{display:none}
+.migration-restore-preview p{margin:6px 0;border-top:1px solid #eff3f9;padding:6px 0}
+.migration-restore-approve{margin:14px 0!important}
+</style></head><body><header><h1>Export Scout <small>v5.4</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>商品発掘｜定番候補＋海外トレンド</h2>
@@ -179,12 +187,26 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 <details class="section-fold"><summary>仕入れ・売却の各記録を編集</summary><div id="salesLedgerRecords"></div></details>
 <button id="ledgerExport" type="button" class="secondary">取引実績をCSVバックアップ</button>
 <details class="section-fold migration-backup-panel" id="migrationBackupPanel">
-<summary>将来のFirebase移行に備えて、全データを一括バックアップ</summary>
-<p class="note">この端末にある候補・調査待ち・予想利益の検証メモ・実際の取引履歴・設定を、1つのJSONファイルに保存します。<strong>現時点でFirebaseへの同期・インポートはできません。</strong></p>
+<summary>データ移行の準備｜全件バックアップと安全な復元</summary>
+<p class="note">この端末にある候補・調査待ち・予想利益の検証メモ・実際の取引履歴・設定を、1つのJSONファイルに保存します。バックアップから空き領域だけ復元できるようになりました。<strong>Firebaseへの同期や3人のリアルタイム共有はまだ未実装です。</strong></p>
 <p id="migrationBackupStatus" class="note" role="status">保存されたデータの種類を確認中…</p>
 <div id="migrationBackupInventory"></div>
 <div class="buttons"><button id="migrationBackupDownload" type="button">全データをJSON保存</button><button id="migrationBackupRefresh" type="button" class="secondary">保存状況を更新</button></div>
 <p id="migrationBackupMessage" class="note" role="status">バックアップファイルは取引履歴などの情報を含むので、公開GitHubやSNSにはアップロードしないでください。</p>
+<div class="migration-restore-panel" id="migrationRestorePanel">
+<h4>JSONバックアップを事前確認して復元（空き領域のみ）</h4>
+<p class="note">別の端末や将来の新しいサイトへデータを引き継ぐための準備機能。ファイルを読み取って内容・件数・既存データとの競合を表示します。<strong>既存の保存領域は一切上書きせず、複数人のデータを自動統合もしません。</strong></p>
+<label for="migrationRestoreFile">以前保存した Export Scout のJSONバックアップ</label>
+<input id="migrationRestoreFile" type="file" accept=".json,application/json">
+<p id="migrationRestoreMessage" class="note" role="status">ファイル選択後に事前確認できます。外部サーバーへは送信しません。</p>
+<div id="migrationRestorePreview" class="migration-restore-preview"></div>
+<label class="checkline migration-restore-approve" for="migrationRestoreApprove">
+<input id="migrationRestoreApprove" type="checkbox">
+既存データをスキップし、空き領域のみに復元することを確認しました
+</label>
+<button id="migrationRestoreApply" type="button" disabled>確認した内容をこの端末に復元</button>
+<p class="note">2MB以下のv5.3以降のバックアップに対応。破損データや不正な形式は安全のため取り込みません。復元後はページを再読み込みしてください。ファイルの読み取り・復元はすべてこの端末内で行います。</p>
+</div>
 </details>
 </div>
 </div>
@@ -399,4 +421,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/sales_rankings.js"></script><script src="./assets/migration_backup.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/sales_rankings.js"></script><script src="./assets/migration_backup.js"></script><script src="./assets/migration_restore.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
