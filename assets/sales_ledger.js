@@ -43,6 +43,7 @@ function readStore(){
 }
 function setMsg(s){$('salesLedgerMessage').textContent=s}
 function store(){
+  if(loadWarnings){setMsg('保存中止：読み込めない取引記録があります。既存の原データを保護するため上書きしません。端末の保存データを確認してください。');return false}
   try{localStorage.setItem(KEY,JSON.stringify(records));return true}
   catch(e){setMsg('端末への保存に失敗。変更は保存されていません。容量・ブラウザ設定を確認してね。');return false}
 }
