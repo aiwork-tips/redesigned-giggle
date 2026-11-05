@@ -1,0 +1,30 @@
+name: Firebase candidate Security Rules — Emulator Tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'firebase/**'
+      - 'firebase.json'
+      - '.github/workflows/test-firebase-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  firestore-rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+      - name: Install test-only Firebase SDK and CLI
+        working-directory: firebase
+        run: npm install --no-audit --no-fund
+      - name: Run isolated candidate security rules emulator suite
+        working-directory: firebase
+        run: npm run test:rules
