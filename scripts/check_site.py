@@ -13,8 +13,8 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 12 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/migration_restore.js">') != 1 or html.count('<script src="./assets/team_preview.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and eleven independent scripts")
+if html.count("</script>") != 14 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/migration_restore.js">') != 1 or html.count('<script src="./assets/team_preview.js">') != 1 or html.count('<script src="./assets/team_migration_mapper.js">') != 1 or html.count('<script src="./assets/firebase_readiness.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and thirteen independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
@@ -33,6 +33,9 @@ if not Path("assets/migration_restore.js").is_file():
     raise SystemExit("Missing safe migration restore module")
 if not Path("assets/team_preview.js").is_file():
     raise SystemExit("Missing read-only three-person comparison")
+for path in ("assets/team_migration_mapper.js", "assets/firebase_readiness.js"):
+    if not Path(path).is_file():
+        raise SystemExit("Missing offline Firebase migration preparation module: " + path)
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -84,6 +87,8 @@ subprocess.run(["node", "--check", "assets/sales_rankings.js"], check=True)
 subprocess.run(["node", "--check", "assets/migration_backup.js"], check=True)
 subprocess.run(["node", "--check", "assets/migration_restore.js"], check=True)
 subprocess.run(["node", "--check", "assets/team_preview.js"], check=True)
+subprocess.run(["node", "--check", "assets/team_migration_mapper.js"], check=True)
+subprocess.run(["node", "--check", "assets/firebase_readiness.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -164,6 +169,22 @@ if "localStorage.setItem" in team_src or "fetch(" in team_src:
 rules = Path("firebase/firestore.rules").read_text(encoding="utf-8")
 if "allow read, write: if false;" not in rules:
     raise SystemExit("Pre-activation Firestore access must be denied by default")
+
+for field in ("firebaseJump", "firebasePreflightPanel", "firebasePreflightStatus", "firebasePreflightList", "firebasePreflightRefresh"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing Firebase preflight UI control: " + field)
+if "firebasePreflightPanel" not in Path("assets/firebase_readiness.js").read_text(encoding="utf-8"):
+    # Module may reference only its status/control DOM IDs; check a unique required reference instead.
+    if "firebasePreflightStatus" not in Path("assets/firebase_readiness.js").read_text(encoding="utf-8"):
+        raise SystemExit("Readiness UI has no status binding")
+rules_prod = Path("firebase/firestore.rules").read_text(encoding="utf-8")
+rules_stage = Path("firebase/firestore.candidate.rules").read_text(encoding="utf-8")
+if "allow read, write: if false;" not in rules_prod:
+    raise SystemExit("Production rules must remain DENY ALL until activation approval")
+if "isActiveMember" not in rules_stage or "request.resource.data.revision" not in rules_stage:
+    raise SystemExit("Candidate rules must require membership and write revision checking")
+if "firebase/firestore.rules" not in Path("firebase.json").read_text(encoding="utf-8"):
+    raise SystemExit("Default Firebase CLI configuration must load DENY ALL rules")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
