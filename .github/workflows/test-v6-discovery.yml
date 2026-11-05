@@ -18,10 +18,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate v6 module syntax
+      - name: Validate v6 module and collector syntax
         run: |
           node --check v6/assets/model.mjs
           node --check v6/assets/app.mjs
+          python -m py_compile v6/scripts/collect_discovery.py
+      - name: Test marketplace collectors with synthetic API payloads (no credits)
+        run: python -m unittest discover -s v6/tests -p 'test_*.py' -v
       - name: Verify supplied API data model (synthetic offline tests)
         run: node v6/tests/model.test.mjs
       - name: Confirm no fictional listings shipped to production preview
