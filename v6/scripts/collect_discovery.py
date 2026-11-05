@@ -183,15 +183,44 @@ def soldgraph_research(api_key: str, keyword: str):
     }
 
 
+def choose_auto_target(day=None):
+    """Rotate broad cross-category research targets: one keyword per day.
+
+    Selection is free; repeating the paid API fetch still consumes credits.
+    """
+    if day is None:
+        day = datetime.now(timezone.utc).date()
+    source = Path(__file__).resolve().parents[1] / "data" / "research_targets.json"
+    raw = json.loads(source.read_text(encoding="utf-8"))
+    if not isinstance(raw, dict) or raw.get("schemaVersion") != 1:
+        raise CollectorError("自動検索リストの形式が不正")
+    targets = raw.get("targets")
+    if not isinstance(targets, list) or not 1 <= len(targets) <= 100:
+        raise CollectorError("自動検索リストが空、または不正")
+    for item in targets:
+        if (not isinstance(item, dict)
+                or not isinstance(item.get("keyword"), str)
+                or not 2 <= len(item["keyword"].strip()) <= 70
+                or item.get("category") not in SEARCH_CATEGORIES):
+            raise CollectorError("自動検索キーワードに不備があります")
+    from datetime import date
+    index = (day - date(2026, 1, 1)).days % len(targets)
+    return targets[index]["keyword"], targets[index]["category"]
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("--keyword", required=True)
-    parser.add_argument("--category", default="other", choices=SEARCH_CATEGORIES)
+    parser.add_argument("--keyword", default="", help="省略するとジャンル横断の自動ローテーション")
+    parser.add_argument("--category", default="auto", choices=["auto", *SEARCH_CATEGORIES])
     parser.add_argument("--output", required=True)
     parser.add_argument("--soldgraph", action="store_true",
                         help="Spend at most 1 Soldgraph free credit for one query, if key configured")
     args = parser.parse_args(argv)
     keyword = args.keyword.strip()
+    if not keyword:
+        keyword, selected_category = choose_auto_target()
+    else:
+        selected_category = args.category if args.category != "auto" else "other"
     if not (2 <= len(keyword) <= 70) or any(ord(c) < 32 for c in keyword):
         raise CollectorError("検索語は2〜70文字の通常テキストにしてください")
     yahoo_key = os.environ.get("YAHOO_SHOPPING_APP_ID", "")
@@ -201,7 +230,7 @@ def main(argv=None):
 
     now = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     yahoo_payload = yahoo_request(yahoo_key, keyword)
-    items = yahoo_normalize(yahoo_payload, args.category, now)
+    items = yahoo_normalize(yahoo_payload, selected_category, now)
     if not items:
         raise CollectorError("Yahoo Shoppingで有効な出品商品が確認できなかったため、ファイルは生成しません")
     soldgraph = soldgraph_research(soldgraph_key, keyword)
@@ -212,7 +241,7 @@ def main(argv=None):
         "items": items,
         "research_context": {
             "keyword": keyword,
-            "category": SEARCH_CATEGORIES[args.category],
+            "category": SEARCH_CATEGORIES[selected_category],
             "soldgraph": soldgraph,
             "automatically_matched_skus": 0,
             "warnings": [
@@ -226,6 +255,7 @@ def main(argv=None):
     dest = Path(args.output)
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(encoded, encoding="utf-8")
+    print("今回の調査キーワード：", keyword)
     print("実在する国内出品商品：", len(items), "件")
     print("海外の参考データ：", "取得" if soldgraph.get("state") == "complete" else "未取得")
     print("日本商品・同一SKU・利益判定：未確認（自動判定しません）")
