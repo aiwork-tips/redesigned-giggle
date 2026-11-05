@@ -1,0 +1,82 @@
+name: Export Scout v6 — 実データ単発取得（開発用）
+on:
+  workflow_dispatch:
+    inputs:
+      keyword:
+        description: '確認したい具体的な日本商品・型番（2〜70文字）'
+        required: true
+        type: string
+        default: 'PSP-3000'
+      category:
+        description: '調査カテゴリ（一覧表示の分類のみ・対象限定ではない）'
+        required: true
+        type: choice
+        default: game
+        options:
+          - game
+          - watch
+          - camera
+          - electronics
+          - fashion
+          - craft
+          - collectible
+          - book
+          - other
+      soldgraph:
+        description: 'Soldgraphの無料枠を最大1クレジット使用し海外成約参考を確認'
+        required: true
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: export-scout-single-manual-api-probe
+  cancel-in-progress: false
+jobs:
+  marketplace-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - name: Checkout isolated Export Scout v6 development branch
+        uses: actions/checkout@v4
+        with:
+          ref: dev/v6-auto-discovery
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify required API credentials
+        env:
+          YAHOO_SHOPPING_APP_ID: ${{ secrets.YAHOO_SHOPPING_APP_ID }}
+          SOLDGRAPH_KEY: ${{ secrets.SOLDGRAPH_KEY }}
+          USE_SOLDGRAPH: ${{ inputs.soldgraph }}
+        run: |
+          if [ -z "$YAHOO_SHOPPING_APP_ID" ]; then
+            echo "Yahoo ShoppingのGitHub Actions Secret YAHOO_SHOPPING_APP_ID を先に設定してください。"
+            exit 1
+          fi
+          if [ "$USE_SOLDGRAPH" = "true" ] && [ -z "$SOLDGRAPH_KEY" ]; then
+            echo "Soldgraphを希望していますがSecret SOLDGRAPH_KEY がありません。無料枠を使わず停止します。"
+            exit 1
+          fi
+      - name: Fetch at most one Yahoo page and optionally one Soldgraph sold page
+        env:
+          YAHOO_SHOPPING_APP_ID: ${{ secrets.YAHOO_SHOPPING_APP_ID }}
+          SOLDGRAPH_KEY: ${{ secrets.SOLDGRAPH_KEY }}
+          SEARCH_KEYWORD: ${{ inputs.keyword }}
+          CATEGORY_CODE: ${{ inputs.category }}
+          USE_SOLDGRAPH: ${{ inputs.soldgraph }}
+        run: |
+          options=(--keyword "$SEARCH_KEYWORD" --category "$CATEGORY_CODE" --output /tmp/export-scout-v6-research.json)
+          if [ "$USE_SOLDGRAPH" = "true" ]; then
+            options+=(--soldgraph)
+          fi
+          python v6/scripts/collect_discovery.py "${options[@]}"
+          cp /tmp/export-scout-v6-research.json v6-research-result.json
+      - name: Upload reviewed research result (not a published website feed)
+        uses: actions/upload-artifact@v4
+        with:
+          name: export-scout-v6-research-check
+          path: v6-research-result.json
+          retention-days: 1
+          if-no-files-found: error
