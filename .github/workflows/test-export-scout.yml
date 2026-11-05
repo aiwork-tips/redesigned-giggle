@@ -57,3 +57,4 @@ jobs:
         run: |
           node tests/test_team_migration_mapper.cjs
           node tests/test_firebase_readiness_ui.cjs
+          node tests/test_team_repository.mjs
