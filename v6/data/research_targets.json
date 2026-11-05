@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "notes": "APIで自動検索する初期キーワードの候補。日本商品であればジャンル制限はなく、今後追加する。利益や需要を保証するものではない。",
+  "targets": [
+    {
+      "keyword": "Nintendo DS Lite 本体 中古",
+      "category": "game"
+    },
+    {
+      "keyword": "SEIKO 腕時計 中古",
+      "category": "watch"
+    },
+    {
+      "keyword": "Canon EF レンズ 中古",
+      "category": "camera"
+    },
+    {
+      "keyword": "Sony Walkman NW 中古",
+      "category": "electronics"
+    },
+    {
+      "keyword": "日本製 デニム ジーンズ",
+      "category": "fashion"
+    },
+    {
+      "keyword": "九谷焼 湯呑",
+      "category": "craft"
+    },
+    {
+      "keyword": "Bandai たまごっち",
+      "category": "collectible"
+    },
+    {
+      "keyword": "日本盤 シティポップ レコード",
+      "category": "book"
+    },
+    {
+      "keyword": "CASIO G-SHOCK DW-5600",
+      "category": "watch"
+    },
+    {
+      "keyword": "Olympus OM フィルムカメラ",
+      "category": "camera"
+    },
+    {
+      "keyword": "Snow Peak チタン マグ",
+      "category": "other"
+    },
+    {
+      "keyword": "Sailor 万年筆",
+      "category": "other"
+    },
+    {
+      "keyword": "Nintendo Game Boy Advance",
+      "category": "game"
+    },
+    {
+      "keyword": "Sanrio 限定 グッズ",
+      "category": "collectible"
+    },
+    {
+      "keyword": "SONY MDR ヘッドホン",
+      "category": "electronics"
+    },
+    {
+      "keyword": "日本の工芸 木製 漆器",
+      "category": "craft"
+    }
+  ]
+}
