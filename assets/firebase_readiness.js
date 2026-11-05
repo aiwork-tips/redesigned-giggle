@@ -36,6 +36,7 @@ function inspect(){
   ?'Firebase未接続。取引データに要確認項目があるため、移行を進められません。バックアップを保管してね。'
   :'Firebase未接続。販売履歴は形式上、移行計画に使えます。本人のFirebaseログイン・チーム登録・権限テスト後に取り込みます。';
 }
+get('firebaseJump').addEventListener('click',()=>{get('migrationBackupPanel').open=true});
 get('firebasePreflightRefresh').addEventListener('click',inspect);
 inspect();
 })();
