@@ -53,3 +53,7 @@ jobs:
         run: node tests/test_migration_restore_ui.cjs
       - name: Test offline three-member comparison, duplicate rejection and no writes
         run: node tests/test_team_preview_ui.cjs
+      - name: Test Firebase migration mapping and preflight UI without cloud access
+        run: |
+          node tests/test_team_migration_mapper.cjs
+          node tests/test_firebase_readiness_ui.cjs
