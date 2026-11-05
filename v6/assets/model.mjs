@@ -26,7 +26,7 @@ function url(x){
   catch(e){return false}
 }
 function sourceListing(x,domestic){
- if(!obj(x)||!(x.source in SOURCES)||!url(x.url)||!validDate(x.observedAt))return false;
+ if(!obj(x)||!Object.hasOwn(SOURCES,x.source)||!url(x.url)||!validDate(x.observedAt))return false;
  if(domestic){
    return positive(x.priceJpy,100000000)&&x.currency==='JPY';
  }
@@ -38,7 +38,7 @@ function validRow(x){
  return obj(x)&&typeof x.id==='string'&&/^[A-Za-z0-9._:-]{5,120}$/.test(x.id)
    &&typeof x.name==='string'&&x.name.trim().length>=2&&x.name.length<=200
    &&typeof x.category==='string'&&x.category.trim().length>0&&x.category.length<=80
-   &&x.japanRelation in RELATIONS
+   &&Object.hasOwn(RELATIONS,x.japanRelation)
    &&sourceListing(x.domestic,true)
    &&(x.overseas===null||sourceListing(x.overseas,false))
    &&(x.assumptions===null||(
@@ -84,7 +84,7 @@ export function organize(items,{keyword='',category='all',minProfit=0,now=Date.n
  ).map(item=>({...item,calculation:evaluate(item,now)}));
  const ranked=matches.filter(item=>item.calculation.kind==='profit_estimate'&&item.calculation.profit>=minProfit)
    .sort((a,b)=>b.calculation.profit-a.calculation.profit||a.name.localeCompare(b.name));
- const research=matches.filter(item=>item.calculation.kind!=='profit_estimate')
+ const research=matches.filter(item=>item.calculation.kind!=='profit_estimate'||item.calculation.profit<0)
    .sort((a,b)=>Date.parse(b.domestic.observedAt)-Date.parse(a.domestic.observedAt));
  return {ranked,research,total:matches.length,matched:ranked.length,needsReview:research.length};
 }
