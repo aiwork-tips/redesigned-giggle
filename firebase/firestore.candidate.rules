@@ -21,7 +21,82 @@ service cloud.firestore {
       return value is int && value >= lo && value <= hi;
     }
     function isDate(value) {
-      return value is string && value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+      return value is string && value.matches('^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]);
+    }
+    function txnFields() {
+      return [
+        'schemaVersion', 'createdByUid', 'legacyRecordId',
+        'sku', 'purchaseDate', 'purchaseCostJpy',
+        'status', 'saleDate', 'payoutJpy', 'shippingJpy', 'otherJpy',
+        'notes', 'purchaseLink', 'saleLink',
+        'revision', 'createdAt', 'updatedAt'
+      ];
+    }
+    function validTransaction(d, txnId) {
+      return d.keys().hasAll(txnFields()) && d.keys().hasOnly(txnFields())
+        && d.schemaVersion == 1
+        && d.createdByUid is string
+        && d.createdByUid == request.auth.uid
+        && d.legacyRecordId is string
+        && d.legacyRecordId.matches('^[A-Za-z0-9_-]{6,80}$')
+        && txnId == request.auth.uid + '__' + d.legacyRecordId
+        && d.sku is string && d.sku.size() >= 2 && d.sku.size() <= 180
+        && isDate(d.purchaseDate)
+        && isIntIn(d.purchaseCostJpy, 0, 10000000)
+        && d.status in ['held', 'sold']
+        && d.notes is string && d.notes.size() <= 300
+        && d.purchaseLink is string && d.purchaseLink.size() <= 500
+        && d.saleLink is string && d.saleLink.size() <= 500
+        && isIntIn(d.revision, 1, 2147483647)
+        && d.createdAt is timestamp && d.updatedAt is timestamp
+        && ((d.status == 'held'
+             && d.saleDate == null && d.payoutJpy == null
+             && d.shippingJpy == null && d.otherJpy == null)
+            || (d.status == 'sold'
+             && isDate(d.saleDate) && d.saleDate >= d.purchaseDate
+             && isIntIn(d.payoutJpy, 0, 100000000)
+             && isIntIn(d.shippingJpy, 0, 10000000)
+             && isIntIn(d.otherJpy, 0, 10000000)));
+    }
+    match /teams/{teamId} {
+      allow get: if isActiveMember(teamId);
+      allow list, create, update, delete: if false;
+
+      match /members/{memberUid} {
+        allow get: if signedIn()
+          && request.auth.uid == memberUid
+          && isActiveMember(teamId);
+        allow list, create, update, delete: if false;
+      }
+
+      match /transactions/{txnId} {
+        allow get, list: if isActiveMember(teamId);
+        allow create: if isActiveMember(teamId)
+          && validTransaction(request.resource.data, txnId)
+          && request.resource.data.revision == 1
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time;
+        allow update: if isActiveMember(teamId)
+          && resource.data.createdByUid == request.auth.uid
+          && validTransaction(request.resource.data, txnId)
+          && request.resource.data.createdByUid == resource.data.createdByUid
+          && request.resource.data.legacyRecordId == resource.data.legacyRecordId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.revision == resource.data.revision + 1
+          && request.resource.data.updatedAt == request.time;
+        allow delete: if false;
+      }
+
+      match /{other=**} {
+        allow read, write: if false;
+      }
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+);
     }
     function txnFields() {
       return [
