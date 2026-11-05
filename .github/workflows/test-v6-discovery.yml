@@ -1,0 +1,29 @@
+name: Export Scout v6 Development Tests
+on:
+  push:
+    branches:
+      - dev/v6-auto-discovery
+    paths:
+      - 'v6/**'
+      - '.github/workflows/test-v6-discovery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-v6:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate v6 module syntax
+        run: |
+          node --check v6/assets/model.mjs
+          node --check v6/assets/app.mjs
+      - name: Verify supplied API data model (synthetic offline tests)
+        run: node v6/tests/model.test.mjs
+      - name: Confirm no fictional listings shipped to production preview
+        run: |
+          node -e "const f=require('./v6/data/latest.json');if(f.items.length||f.generatedAt!==null)process.exit(1);"
