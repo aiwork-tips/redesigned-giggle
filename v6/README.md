@@ -67,3 +67,25 @@
 `node v6/tests/model.test.mjs`
 
 このテストのサンプルは**テスト専用の合成データ**。公開データ `v6/data/latest.json` は空のまま。
+
+
+## v6.0 の実データ取得フロー（実装済み・未接続）
+- GitHub `main` の `.github/workflows/probe-v6-real-products.yml` は **手動でのみ実行**。GitHub公式仕様では手動実行するworkflowがデフォルトブランチに必要なため、現行ホームのコードを触らずにworkflowファイルのみ main に配置した。
+- Actionsから「Export Scout v6 — 実データ単発取得（開発用）」を実行する。**検索語が空欄なら16個の初期調査対象から日付に応じて自動選択**。カテゴリは暫定で、今後すべてのジャンルへ拡張可能。
+- 原則 Yahoo!ショッピングのAPI検索は1回・10件以内。オプションの `soldgraph` を明示的にONにした場合にだけSoldgraph売却済み検索を1回発行する（ジョブ完了の確認は無料のポーリング）。
+- 取得したJSONはActions artifact `export-scout-v6-research-check`（**保存1日間**）で渡す。API認証情報・YahooのClient ID・Soldgraphキーは出力しない。
+- 開発UIの「API実証結果のJSONを読み込んでプレビュー」にartifactの `v6-research-result.json` を選ぶと、このブラウザのメモリ内で表示する。**端末保存、Firebase同期、正式サイトへの公開は行わない**。
+- 国内商品の価格・URLは実際のYahoo API応答に由来する。出典・取得時刻を必ず表示。
+- Soldgraphの価格要約は「同じ検索語を含む海外の売却済み出品ページ」の参考。**個々のYahoo商品の型番・状態・付属品と同一である保証はない**。したがって個別商品の `overseas` は `null` のままにし、利益予測はしない。
+- 真の自動発掘ランキングには、同一型番の照合・国内仕入れ原価（税・送料を含む）・信頼できる海外成約参考・為替・配送費・出品手数料の検証がさらに必要。
+- **APIアクセスを実際に許可するには、ユーザー自身が**GitHubの `Settings → Secrets and variables → Actions` に `YAHOO_SHOPPING_APP_ID`、必要なら `SOLDGRAPH_KEY` を設定する。ここに値を書かない。
+- `Soldgraph` の無料100回は2026-10-09以降の新規アカウントでは**一度だけ**であり、毎月更新されない。無駄な検索を避けるため手動発火とし、自動スケジュールは**まだ設定しない**。
+- v6のテスト：`python -m unittest discover -s v6/tests -p 'test_*.py' -v`、`node v6/tests/model.test.mjs`。テストで用いるAPI応答は**合成データ**。
+
+## API連携に関する公式資料
+- Yahoo! 商品検索v3： https://developer.yahoo.co.jp/webapi/shopping/v3/itemsearch.html
+- Soldgraph API検索とジョブ： https://soldgraph.com/docs/api/overview
+- Soldgraph無料枠・価格： https://soldgraph.com/docs/api/usage
+- Soldgraph利用条件： https://soldgraph.com/terms
+- GitHub Actions手動実行： https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow
+
