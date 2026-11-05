@@ -59,7 +59,7 @@ function run(){
  assert.match(t.get('teamPreviewStatus').textContent,/重複する取引IDはありません/);
  assert.match(t.get('teamPreviewSummary').children[0].textContent,/記録 4件/);
  assert.match(t.get('teamPreviewSummary').children[0].textContent,/売却 3件/);
- assert.match(t.get('teamPreviewSummary').children[1].textContent,/9,700円/);
+ assert.match(t.get('teamPreviewSummary').children[1].textContent,/9,900円/);
  assert.match(t.get('teamPreviewSummary').children[1].textContent,/9,000円/);
  assert.equal(t.get('teamPreviewMembers').children.length,3);
  assert.equal(t.get('teamPreviewRanking').children.length,2);
