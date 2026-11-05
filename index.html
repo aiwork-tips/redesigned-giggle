@@ -104,7 +104,16 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 .migration-restore-preview:empty{display:none}
 .migration-restore-preview p{margin:6px 0;border-top:1px solid #eff3f9;padding:6px 0}
 .migration-restore-approve{margin:14px 0!important}
-</style></head><body><header><h1>Export Scout <small>v5.4</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
+
+.team-preview-panel{border-top:1px solid #cfdded;margin-top:18px;padding-top:16px}
+.team-preview-panel h4{margin:0 0 8px;font-size:15px;color:#1e4779}
+.team-file-grid{display:grid;grid-template-columns:1fr;gap:5px}
+.team-file-grid input[type="file"]{width:100%;max-width:100%;padding:10px}
+.team-member-row{padding:10px 0;border-top:1px solid #d7e3f1}
+.team-member-row strong{display:block}
+.team-member-row p{margin:5px 0}
+#teamPreviewSummary{padding:5px 10px;background:#f4f8ff;border-radius:10px}
+</style></head><body><header><h1>Export Scout <small>v5.5</small></h1><div class="muted">海外輸出せどり・無料リサーチツール</div></header><main>
 <section class="card"><h2>① 商品検索・相場メモ</h2><label for="product">商品名・型番</label><input id="product" placeholder="例：PSP-3000"><div class="buttons"><button id="ebay">eBay販売済み検索 ↗</button><button class="secondary" id="mercari">メルカリ ↗</button><button class="secondary" id="yahoo">Yahoo!オークション ↗</button></div><p class="note">検索結果は別タブで開きます。実売価格・仕入れ価格は確認後に入力してください。サイトからの自動取得は行いません。</p><div class="quick-work"><h3>かんたん利益チェック</h3><div class="grid"><div><label for="quickUsd">eBay成約価格（USD）</label><input id="quickUsd" type="number" min="0" step=".01" placeholder="例：65"></div><div><label for="quickCost">国内仕入れ価格（円）</label><input id="quickCost" type="number" min="0" placeholder="例：3000"></div></div><div class="buttons"><button class="secondary" id="quickPasteUsd">eBay価格を貼り付け</button><button class="secondary" id="quickPasteCost">仕入れ価格を貼り付け</button></div><p id="quickPasteInfo" class="note" role="status">コピーした価格を貼り付けできます。読み取れない場合は手入力してください。</p><p id="quickRate" class="note">参考為替レートを取得中…</p><p id="quickProfit" class="profit">—</p><p id="quickSafety" class="note"></p><p id="quickLimit" class="note"></p><p id="quickCheck" class="note" role="status"></p><p id="quickSavedStatus" class="note" role="status"></p><p id="quickHint" class="note">送料・手数料は④の設定を使います。販売額にはeBayで受け取る送料も含めてください。</p><div class="buttons"><button id="quickSave">この商品を候補に保存</button><button class="secondary" id="quickDetails">詳細計算を開く</button><button class="secondary" id="quickClear">入力をクリア</button></div></div></section>
 <section class="card" id="trendDiscovery">
 <h2>商品発掘｜定番候補＋海外トレンド</h2>
@@ -206,6 +215,21 @@ details.section-fold>summary:focus-visible{outline-color:#2873df}
 </label>
 <button id="migrationRestoreApply" type="button" disabled>確認した内容をこの端末に復元</button>
 <p class="note">2MB以下のv5.3以降のバックアップに対応。破損データや不正な形式は安全のため取り込みません。復元後はページを再読み込みしてください。ファイルの読み取り・復元はすべてこの端末内で行います。</p>
+</div>
+<div class="team-preview-panel" id="teamPreviewPanel">
+<h4>3人分の販売実績を照合（共同管理の準備）</h4>
+<p class="note">各自が「全データをJSON保存」で出力したファイルを選んでね。<strong>端末内で一時的に比較するだけ</strong>で、既存データは変更せず、外部送信もしません。重複する取引IDが見つかったら二重計上を防ぐため集計を停止します。</p>
+<div class="team-file-grid">
+<div><label for="teamFileA">担当AのJSONバックアップ</label><input id="teamFileA" type="file" accept=".json,application/json"></div>
+<div><label for="teamFileB">担当BのJSONバックアップ</label><input id="teamFileB" type="file" accept=".json,application/json"></div>
+<div><label for="teamFileC">担当CのJSONバックアップ</label><input id="teamFileC" type="file" accept=".json,application/json"></div>
+</div>
+<div class="buttons"><button id="teamCompare" type="button">バックアップを照合</button><button id="teamDownload" type="button" class="secondary" disabled>照合済みの共同集計JSONを保存</button></div>
+<p id="teamPreviewStatus" class="note" role="status">担当A〜Cのファイルを選択して照合できます。</p>
+<div id="teamPreviewSummary"></div>
+<div id="teamPreviewMembers"></div>
+<details class="section-fold"><summary>共同販売の商品別集計</summary><div id="teamPreviewRanking"></div></details>
+<p class="note">同じ商品でも型番・状態の書き方が違うと別商品になります。個人別の取引IDは重複していないか確認しますが、別IDで二重登録した取引までは検知できません。<strong>3人の自動同期やFirebaseへのアップロードではありません。</strong></p>
 </div>
 </details>
 </div>
@@ -421,4 +445,4 @@ const cell=x=>'"'+String(x??'').replace(/"/g,'""')+'"';$('export').onclick=()=>{
 function parse(t){let rows=[],row=[],v='',q=false;for(let i=0;i<t.length;i++){let c=t[i];if(q){if(c==='"'&&t[i+1]==='"'){v+='"';i++}else if(c==='"')q=false;else v+=c}else if(c==='"')q=true;else if(c===','){row.push(v);v=''}else if(c==='\n'){row.push(v.replace(/\r$/,''));rows.push(row);row=[];v=''}else v+=c}if(v||row.length){row.push(v);rows.push(row)}return rows}
 $('import').onclick=()=>$('file').click();$('file').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let rows=parse((await f.text()).replace(/^\uFEFF/,''));let incoming=[cols,cols.slice(0,-1),cols.slice(0,-2)].find(c=>rows[0].join(',')===c.join(','));if(!incoming)throw Error('CSVの列が一致しません');let data=rows.slice(1).filter(r=>r.length===incoming.length).map(r=>{let x={id:Date.now()+Math.random(),status:'未調査',decision:'候補'};incoming.forEach((k,i)=>x[k]=r[i]);['sale','cost','ship','rate','other','profit'].forEach(k=>x[k]=Number(x[k])||0);return x});items.push(...data);persist();alert(data.length+'件読み込みました')}catch(err){alert('読み込みエラー：'+err.message)}e.target.value=''};
 $('clear').onclick=()=>{if(confirm('候補をすべて削除しますか？')){items=[];persist()}};calc();render()})();
-</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/sales_rankings.js"></script><script src="./assets/migration_backup.js"></script><script src="./assets/migration_restore.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
+</script><script src="./assets/opportunities.js"></script><script src="./assets/trends.js"></script><script src="./assets/evergreen.js"></script><script src="./assets/repeatability.js"></script><script src="./assets/sales_ledger.js"></script><script src="./assets/sales_rankings.js"></script><script src="./assets/migration_backup.js"></script><script src="./assets/migration_restore.js"></script><script src="./assets/team_preview.js"></script><script src="./assets/auto_picks.js"></script><script src="./assets/overseas_news.js"></script></body></html>
