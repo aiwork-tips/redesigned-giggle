@@ -4,5 +4,5 @@
   "price_type": "historical_sale_vs_active_domestic_offer",
   "generated_at": null,
   "items": [],
-  "notice": "No source-linked completed-sale and active domestic-offer evidence is connected. No automatic profit ranking is available."
+  "notice": "Only format, dates and URL hosts were checked, NOT the truth of the external listings. Historical sale totals and active Japanese offers are not simultaneously executable. Shipping, eBay fees and currency are personal assumptions. No guaranteed profit."
 }
