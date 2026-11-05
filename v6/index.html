@@ -52,6 +52,10 @@ button:hover{background:#125a7f}.button-field{align-self:end}
 .footer{font-size:11px;color:#657991;margin:25px 0 5px}
 @media(max-width:800px){.hero{grid-template-columns:1fr}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:1fr 1fr}.toolbar>div:first-child{grid-column:1/-1}.button-field{align-self:end}}
 @media(max-width:510px){main{padding:16px 12px 38px}header{padding:16px 14px}.brand h1{font-size:21px}.hero-card h2{font-size:25px}.hero-card,.hero-side{padding:18px}.summary{gap:8px}.metric{padding:13px}.metric strong{font-size:23px}.card{padding:15px}.stats{grid-template-columns:1fr}.item-top{flex-direction:column}.price-label{text-align:left}.toolbar{grid-template-columns:1fr 1fr}}
+.offline-import{background:#f2f7fb;padding:14px;border:1px solid #d6e4f1;border-radius:12px;margin-top:12px}
+.offline-import input{background:white}
+#marketResearch{line-height:1.85}
+#marketResearch strong{font-size:14px;color:#224d72}
 </style>
 </head>
 <body>
@@ -77,6 +81,15 @@ button:hover{background:#125a7f}.button-field{align-self:end}
 <div class="button-field"><button id="refresh" type="button">データを再読込</button></div>
 </div>
 <p class="note">値段だけで利益を断定しません。海外の成約参考値がない商品・仕入れ価格が古い商品は「要確認」として別表示します。</p>
+<div class="offline-import">
+<label for="researchImport">API実証結果のJSONを読み込んでプレビュー</label>
+<input id="researchImport" type="file" accept=".json,application/json">
+<p class="note">GitHub Actionsで取得した確認用JSONを、このブラウザ内だけで開きます。データはアップロード・保存されません。公開ホームのデータは変更しません。</p>
+</div>
+</section>
+<section class="card" aria-labelledby="marketHeading">
+<div class="heading"><h2 id="marketHeading">海外需要の参考調査</h2><span>国内の商品との同一性は未確認</span></div>
+<div id="marketResearch" class="note">海外の実データ取得後に参考情報を表示します。</div>
 </section>
 <section class="card" aria-labelledby="rankingHeading">
 <div class="heading"><h2 id="rankingHeading">利益を試算できる商品</h2><span id="rankingCaption">成約参考値に基づく試算・利益確定ではありません</span></div>
