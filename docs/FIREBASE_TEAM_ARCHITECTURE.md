@@ -1,4 +1,4 @@
-# Export Scout v5.5 — 3人共同運用・Firebase移行の設計案
+# Export Scout v5.6 — 3人共同運用・Firebase移行の設計案
 
 > **設計だけ。Firebaseプロジェクトの作成・認証・Firestoreへの接続・データ同期・本番公開はまだ行っていない。** ローカルの取引記録やバックアップを公開リポジトリに保存しない。
 
@@ -61,3 +61,11 @@ teams/{teamId}/audit/{eventId}           # 編集/削除履歴（後続実装）
 - 古い端末のデータとの競合、SKU表記ゆれ、返品・返金の会計処理
 - Firestore無料枠と商用運用条件、Firebaseプロジェクト名
 - Firebase SDK、Rulesのエミュレーター検証と実機動作
+
+## v5.6 追加
+- 現時点では**Firebase本番接続・Googleログイン・クラウド同期は未実装**。公開GitHub版はローカル保存のみ。
+- メンバー限定アクセス用の候補ルールは `firebase/firestore.candidate.rules`、本番用のデフォルトは `firebase/firestore.rules`（すべて拒否）。
+- `assets/team_migration_mapper.js` でローカル売却履歴をユーザーごとのID付きの新スキーマに変換（通信・保存なし）。
+- `assets/firebase_readiness.js` で旧取引の移行可否を表示（読み取り専用）。
+- Firebaseセキュリティ候補ルールのテストは `.github/workflows/test-firebase-candidate.yml` でエミュレーターを利用。結果の確認と採用判断は本番移行前の必須条件。
+- 詳細な安全運用手順は `docs/FIREBASE_V56_STAGING.md` を参照。
