@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-04T09:28:36.517585+00:00",
+  "generated_at": "2026-11-05T13:19:05.750678+00:00",
   "source": "google_trends_rss",
   "signal_type": "google_trends_related_keyword",
   "checked_regions": [
@@ -14,16 +14,16 @@
   "failed_regions": [],
   "signals": [
     {
-      "id": "nintendo_switch_GB",
-      "product_id": "nintendo_switch",
-      "name": "Nintendo Switch関連",
-      "term": "Nintendo Switch Japan limited",
-      "matched_query": "nintendo switch zelda ocarina of time",
-      "region": "GB",
-      "observed_at": "2026-11-04T08:40:00+00:00",
+      "id": "graded_manga_CA",
+      "product_id": "graded_manga",
+      "name": "鑑定済みワンピース初版漫画",
+      "term": "One Piece manga first edition graded Japanese",
+      "matched_query": "one piece 1198",
+      "region": "CA",
+      "observed_at": "2026-11-05T12:40:00+00:00",
       "signal_type": "google_trends_related_keyword",
-      "evidence_class": "curated_brand_interest",
-      "source_url": "https://trends.google.com/trending?geo=GB",
+      "evidence_class": "reported_crossborder_demand",
+      "source_url": "https://trends.google.com/trending?geo=CA",
       "note": "A related search term was rising; this does NOT prove these Japanese goods sold or will sell."
     }
   ],
