@@ -50,3 +50,5 @@ jobs:
         run: node tests/test_migration_backup_ui.cjs
       - name: Test guarded local JSON restore and rollback offline
         run: node tests/test_migration_restore_ui.cjs
+      - name: Test offline three-member comparison, duplicate rejection and no writes
+        run: node tests/test_team_preview_ui.cjs
