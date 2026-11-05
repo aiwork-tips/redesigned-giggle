@@ -89,6 +89,7 @@ subprocess.run(["node", "--check", "assets/migration_restore.js"], check=True)
 subprocess.run(["node", "--check", "assets/team_preview.js"], check=True)
 subprocess.run(["node", "--check", "assets/team_migration_mapper.js"], check=True)
 subprocess.run(["node", "--check", "assets/firebase_readiness.js"], check=True)
+subprocess.run(["node", "--check", "firebase/team_repository.mjs"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
