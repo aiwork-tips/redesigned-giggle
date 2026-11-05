@@ -1,0 +1,33 @@
+name: Export Scout Yahoo 商品API — 実データ単発検証
+on:
+  workflow_dispatch:
+    inputs:
+      keyword:
+        description: '検索したい商品・型番（例 PSP-3000）'
+        required: true
+        default: 'PSP-3000'
+        type: string
+permissions:
+  contents: read
+jobs:
+  probe-yahoo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Confirm app ID configured in GitHub repository secrets
+        env:
+          YAHOO_SHOPPING_APP_ID: ${{ secrets.YAHOO_SHOPPING_APP_ID }}
+        run: |
+          if [ -z "$YAHOO_SHOPPING_APP_ID" ]; then
+            echo "Yahoo! API Client ID未設定。Settings > Secrets and variables > Actions から YAHOO_SHOPPING_APP_ID を設定してください。"
+            exit 1
+          fi
+      - name: Retrieve real product listings (one query, no saved output)
+        env:
+          YAHOO_SHOPPING_APP_ID: ${{ secrets.YAHOO_SHOPPING_APP_ID }}
+          SEARCH_KEYWORD: ${{ inputs.keyword }}
+        run: python scripts/probe_yahoo_shopping.py "$SEARCH_KEYWORD"
