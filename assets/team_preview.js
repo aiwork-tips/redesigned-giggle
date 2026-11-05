@@ -126,6 +126,7 @@ $('teamDownload').addEventListener('click',()=>{
  document.body.append(a);try{a.click()}finally{a.remove();URL.revokeObjectURL(url)}
  showState('共同集計用JSONのダウンロード操作を開始しました。ファイルの保存を確認してね。売上の個人情報を含むため公開GitHubにアップロードしないでください。');
 });
+if(typeof location!=='undefined'&&location.hash==='#teamPreviewPanel')$('migrationBackupPanel').open=true;
 $('teamJump').addEventListener('click',()=>{$('migrationBackupPanel').open=true});
 showState('最大3名のJSONバックアップを読み取って、重複・利益・在庫を一時比較できます。');
 })();
