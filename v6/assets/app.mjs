@@ -86,6 +86,25 @@ function render(){
    '追加調査する商品はありません',
    snapshot.items.length?'現在の条件では要確認商品がありません。':'商品APIの接続・取得テスト後に、出典付きの候補を表示します。');
 }
+function renderMarketResearch(context){
+ const root=$('marketResearch');root.replaceChildren();
+ if(!context||typeof context!=='object'){
+   root.append(el('p','海外の参考データはまだありません。API接続待ちです。'));
+   return;
+ }
+ const heading=el('strong','調査キーワード：'+String(context.keyword||'未指定').slice(0,100));
+ root.append(heading);
+ const data=context.soldgraph;
+ if(data&&data.state==='complete'){
+   const count=Number.isInteger(data.priced_count_on_page)?data.priced_count_on_page:0;
+   const median=typeof data.median_excluding_best_offer_usd==='number'&&data.median_excluding_best_offer_usd>0
+    ? data.median_excluding_best_offer_usd.toLocaleString('en-US')+' USD':'不明';
+   root.append(el('p','海外の参考：eBay米国サイトの売却済み検索 1ページ / 価格を読み取れた表示 '+count+'件 / Best Offerの提示額を除外した中央値 '+median+'。'));
+   root.append(el('p','これは検索キーワードに対する参考情報。国内の商品と同一型番・状態だとは確認していません。売却頻度・実際の受取額・確定利益とは区別します。','warning'));
+ }else{
+   root.append(el('p','海外の売却済み価格は未取得。国内出品情報だけでは予想利益を出しません。'));
+ }
+}
 function fillCategories(){
  const current=$('category').value;
  $('category').replaceChildren();
@@ -107,6 +126,7 @@ async function load(){
    const payload=await response.json();
    const items=parseSnapshot(payload);
    snapshot={items,generatedAt:payload.generatedAt};
+   renderMarketResearch(payload.research_context||null);
    fillCategories();
    refreshStats();
    render();
@@ -114,10 +134,28 @@ async function load(){
    else status(items.length+'件の商品データを読み込みました。表示価格と売却参考データの取得日時を確認してください。');
  }catch(e){
    snapshot={items:[],generatedAt:null};
-   fillCategories();refreshStats();render();
+   renderMarketResearch(null);fillCategories();refreshStats();render();
    status('取得データの読み込みに失敗しました。古い情報や不完全な商品を表示しないため、結果を非表示にしました。',true);
  }finally{$('refresh').disabled=false}
 }
+$('researchImport').addEventListener('change',async()=>{
+ const file=$('researchImport').files?.[0];
+ if(!file)return;
+ if(file.size>900000){status('確認用JSONが大きすぎます（900KB以下を選んでください）。',true);return}
+ try{
+   const payload=JSON.parse(await file.text());
+   if($('researchImport').files?.[0]!==file)return;
+   const items=parseSnapshot(payload);
+   snapshot={items,generatedAt:payload.generatedAt};
+   renderMarketResearch(payload.research_context||null);
+   fillCategories();refreshStats();render();
+   status('この端末だけでAPI確認用JSON '+items.length+'件をプレビュー中。サイトへのアップロードや保存はしていません。');
+ }catch(e){
+   snapshot={items:[],generatedAt:null};
+   renderMarketResearch(null);fillCategories();refreshStats();render();
+   status('JSONの形式や商品データが不正なためプレビューを中止しました。',true);
+ }
+});
 for(const name of ['keyword','category','minProfit'])$(''+name).addEventListener(name==='keyword'?'input':'change',render);
 $('refresh').addEventListener('click',load);
 load();
