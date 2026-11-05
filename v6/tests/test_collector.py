@@ -58,6 +58,35 @@ class CollectorTests(unittest.TestCase):
         self.assertIsNone(result[0]["assumptions"])
         self.assertTrue(result[0]["id"].startswith("yahoo:"))
 
+    def test_cross_category_rotation(self):
+        from datetime import date, timedelta
+        targets = []
+        for n in range(16):
+            k, category = collector.choose_auto_target(
+                date(2026, 1, 1) + timedelta(days=n)
+            )
+            targets.append((k, category))
+            self.assertIn(category, collector.SEARCH_CATEGORIES)
+        self.assertEqual(len(set(targets)), 16, "Rotating searches cover all 16 seeds")
+        self.assertEqual(
+            collector.choose_auto_target(date(2026, 1, 17)),
+            targets[0],
+        )
+
+    def test_automatic_keyword_with_no_manual_input(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = str(Path(tmp) / "auto.json")
+            with patch.dict(collector.os.environ, {
+                "YAHOO_SHOPPING_APP_ID": "test-client", "SOLDGRAPH_KEY": ""
+            }), patch.object(collector, "yahoo_request",
+                            return_value=payload_yahoo()) as call:
+                status = collector.main(["--output", dest])
+            self.assertEqual(status, 0)
+            self.assertEqual(call.call_count, 1)
+            packet = json.loads(Path(dest).read_text("utf-8"))
+            self.assertEqual(packet["research_context"]["automatically_matched_skus"], 0)
+            self.assertEqual(len(packet["items"]), 2)
+
     def test_strict_url_filter(self):
         for url in (
             "http://store.shopping.yahoo.co.jp/item",
