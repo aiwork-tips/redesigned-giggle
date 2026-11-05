@@ -40,7 +40,8 @@ jobs:
       - name: Checkout isolated Export Scout v6 development branch
         uses: actions/checkout@v4
         with:
-          ref: dev/v6-auto-discovery
+          # Pinned reviewed collector snapshot: do not run mutable development code with API keys.
+          ref: 1cc12bf571de3092aa8a4c2a5dffb0f2f3d74789
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
