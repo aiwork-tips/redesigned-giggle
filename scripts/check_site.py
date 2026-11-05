@@ -13,8 +13,8 @@ for tag in ("<script>", "<body", "</body>", "<main", "</main>", "</html>"):
     if html.count(tag) != 1:
         raise SystemExit(f"Expected exactly one {tag}, saw {html.count(tag)}")
 
-if html.count("</script>") != 11 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/migration_restore.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
-    raise SystemExit("Expected one inline script and ten independent scripts")
+if html.count("</script>") != 12 or html.count('<script src="./assets/opportunities.js">') != 1 or html.count('<script src="./assets/trends.js">') != 1 or html.count('<script src="./assets/evergreen.js">') != 1 or html.count('<script src="./assets/repeatability.js">') != 1 or html.count('<script src="./assets/sales_ledger.js">') != 1 or html.count('<script src="./assets/sales_rankings.js">') != 1 or html.count('<script src="./assets/migration_backup.js">') != 1 or html.count('<script src="./assets/migration_restore.js">') != 1 or html.count('<script src="./assets/team_preview.js">') != 1 or html.count('<script src="./assets/auto_picks.js">') != 1 or html.count('<script src="./assets/overseas_news.js">') != 1:
+    raise SystemExit("Expected one inline script and eleven independent scripts")
 if not Path("assets/opportunities.js").is_file():
     raise SystemExit("Missing separate opportunity viewer code")
 if not Path("assets/trends.js").is_file():
@@ -31,6 +31,8 @@ if not Path("assets/migration_backup.js").is_file():
     raise SystemExit("Missing migration backup module")
 if not Path("assets/migration_restore.js").is_file():
     raise SystemExit("Missing safe migration restore module")
+if not Path("assets/team_preview.js").is_file():
+    raise SystemExit("Missing read-only three-person comparison")
 if not Path("assets/auto_picks.js").is_file():
     raise SystemExit("Missing report-backed auto-picks renderer")
 if not Path("assets/overseas_news.js").is_file():
@@ -81,6 +83,7 @@ subprocess.run(["node", "--check", "assets/sales_ledger.js"], check=True)
 subprocess.run(["node", "--check", "assets/sales_rankings.js"], check=True)
 subprocess.run(["node", "--check", "assets/migration_backup.js"], check=True)
 subprocess.run(["node", "--check", "assets/migration_restore.js"], check=True)
+subprocess.run(["node", "--check", "assets/team_preview.js"], check=True)
 subprocess.run(["node", "--check", "assets/auto_picks.js"], check=True)
 subprocess.run(["node", "--check", "assets/overseas_news.js"], check=True)
 
@@ -151,6 +154,16 @@ for needle in ("invalid_json_keys", "migrationRestoreApprove", "localStorage.get
         raise SystemExit("Safe restore validation/rollback check missing: " + needle)
 if "fetch(" in restore_source:
     raise SystemExit("Restore must stay entirely local; no uploads")
+
+for field in ("teamPreviewPanel", "teamFileA", "teamFileB", "teamFileC", "teamCompare", "teamDownload", "teamPreviewStatus", "teamPreviewSummary", "teamPreviewMembers", "teamPreviewRanking"):
+    if f'id="{field}"' not in html:
+        raise SystemExit("Missing member comparison control: " + field)
+team_src = Path("assets/team_preview.js").read_text(encoding="utf-8")
+if "localStorage.setItem" in team_src or "fetch(" in team_src:
+    raise SystemExit("Offline team comparison must not update local storage or fetch")
+rules = Path("firebase/firestore.rules").read_text(encoding="utf-8")
+if "allow read, write: if false;" not in rules:
+    raise SystemExit("Pre-activation Firestore access must be denied by default")
 
 with tempfile.TemporaryDirectory() as folder:
     js_file = Path(folder) / "export-scout.js"
