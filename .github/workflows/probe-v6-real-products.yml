@@ -3,16 +3,17 @@ on:
   workflow_dispatch:
     inputs:
       keyword:
-        description: '確認したい具体的な日本商品・型番（2〜70文字）'
-        required: true
+        description: '空欄ならジャンル横断の検索キーワードを自動選択（具体的な型番の手入力も可能）'
+        required: false
         type: string
-        default: 'PSP-3000'
+        default: ''
       category:
-        description: '調査カテゴリ（一覧表示の分類のみ・対象限定ではない）'
+        description: '手入力検索の場合の表示分類。自動選択は auto'
         required: true
         type: choice
-        default: game
+        default: auto
         options:
+          - auto
           - game
           - watch
           - camera
@@ -41,7 +42,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           # Pinned reviewed collector snapshot: do not run mutable development code with API keys.
-          ref: 1cc12bf571de3092aa8a4c2a5dffb0f2f3d74789
+          ref: e958cda0f38d3ec2149f84a9ab305764a17b8c01
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
