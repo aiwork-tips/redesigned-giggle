@@ -32,8 +32,9 @@ function card(item,ranked){
    value.textContent=yen(calc.profit);
    value.append(el('span','試算利益（確定値ではありません）','price-label'));
  }else{
-   value.textContent='要確認';
-   value.append(el('span',calc.reason,'price-label'));
+   const loss=calc.kind==='profit_estimate'&&calc.profit<0;
+   value.textContent=loss?'試算赤字：'+yen(calc.profit):'要確認';
+   value.append(el('span',loss?'仕入れは見送り・条件再確認':calc.reason,'price-label'));
  }
  top.append(label,value);
  const stats=el('div',undefined,'stats');
@@ -51,7 +52,10 @@ function card(item,ranked){
  if(ranked){
    box.append(el('p','試算用の円換算：'+yen(calc.salesJpy)+' ／ 手数料の仮定：'+yen(calc.feeJpy)+'。送料・その他費用も控除済み（仮定値）。','note'));
  }else{
-   box.append(el('p','注意：'+calc.reason+'。国内の価格確認：'+new Date(item.domestic.observedAt).toLocaleString('ja-JP')+'。','note warning'));
+   const note=calc.kind==='profit_estimate'&&calc.profit<0
+     ? '注意：試算利益が赤字です。送料・手数料・海外相場を再確認してください。'
+     : '注意：'+calc.reason+'。';
+   box.append(el('p',note+' 国内の価格確認：'+new Date(item.domestic.observedAt).toLocaleString('ja-JP')+'。','note warning'));
  }
  return box;
 }
