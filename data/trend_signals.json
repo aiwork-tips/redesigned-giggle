@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-05T13:19:05.750678+00:00",
+  "generated_at": "2026-11-06T13:02:16.515818+00:00",
   "source": "google_trends_rss",
   "signal_type": "google_trends_related_keyword",
   "checked_regions": [
@@ -12,20 +12,6 @@
     "HK"
   ],
   "failed_regions": [],
-  "signals": [
-    {
-      "id": "graded_manga_CA",
-      "product_id": "graded_manga",
-      "name": "鑑定済みワンピース初版漫画",
-      "term": "One Piece manga first edition graded Japanese",
-      "matched_query": "one piece 1198",
-      "region": "CA",
-      "observed_at": "2026-11-05T12:40:00+00:00",
-      "signal_type": "google_trends_related_keyword",
-      "evidence_class": "reported_crossborder_demand",
-      "source_url": "https://trends.google.com/trending?geo=CA",
-      "note": "A related search term was rising; this does NOT prove these Japanese goods sold or will sell."
-    }
-  ],
+  "signals": [],
   "notice": "Related Google Trends searches from reported cross-border topics and curated Japan-origin brand watch terms. NOT product sales or current bestseller rankings."
 }
