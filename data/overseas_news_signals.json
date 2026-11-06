@@ -2,12 +2,23 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-05T14:55:43.494131+00:00",
+  "generated_at": "2026-11-06T14:34:42.657038+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [],
+  "articles": [
+    {
+      "id": "time_extension_0",
+      "product_name": "ドリームキャスト",
+      "term": "Sega Dreamcast Japanese",
+      "article_title": "This Dreamcast Controller Can Connect Your Console to the Internet",
+      "article_url": "https://www.timeextension.com/news/2026/11/this-dreamcast-controller-can-connect-your-console-to-the-internet",
+      "publisher": "Time Extension",
+      "published_at": "2026-11-06T10:00:00+00:00",
+      "signal_type": "overseas_editorial_product_mention"
+    }
+  ],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
