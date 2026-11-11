@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-10T13:35:54.691114+00:00",
+  "generated_at": "2026-11-11T12:47:56.186438+00:00",
   "source": "google_trends_rss",
   "signal_type": "google_trends_related_keyword",
   "checked_regions": [
@@ -12,20 +12,6 @@
     "HK"
   ],
   "failed_regions": [],
-  "signals": [
-    {
-      "id": "pokemon_tcg_HK",
-      "product_id": "pokemon_tcg",
-      "name": "ポケモン日本語版トレーディングカード",
-      "term": "Pokemon Japanese trading card single",
-      "matched_query": "麥當勞 pokemon",
-      "region": "HK",
-      "observed_at": "2026-11-10T13:00:00+00:00",
-      "signal_type": "google_trends_related_keyword",
-      "evidence_class": "reported_crossborder_demand",
-      "source_url": "https://trends.google.com/trending?geo=HK",
-      "note": "A related search term was rising; this does NOT prove these Japanese goods sold or will sell."
-    }
-  ],
+  "signals": [],
   "notice": "Related Google Trends searches from reported cross-border topics and curated Japan-origin brand watch terms. NOT product sales or current bestseller rankings."
 }
