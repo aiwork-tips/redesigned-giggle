@@ -2,23 +2,12 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-12T15:33:48.307689+00:00",
+  "generated_at": "2026-11-13T14:53:06.205545+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [
-    {
-      "id": "time_extension_0",
-      "product_name": "PCエンジン",
-      "term": "NEC PC Engine Japanese",
-      "article_title": "New 'Limited Edition' Issue of Forgotten Worlds Is Dedicated to the TurboGrafx-16 / PC Engine",
-      "article_url": "https://www.timeextension.com/news/2026/11/new-limited-edition-issue-of-forgotten-worlds-is-dedicated-to-the-turbografx-16-pc-engine",
-      "publisher": "Time Extension",
-      "published_at": "2026-11-10T16:00:00+00:00",
-      "signal_type": "overseas_editorial_product_mention"
-    }
-  ],
+  "articles": [],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
