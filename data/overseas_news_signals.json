@@ -2,12 +2,23 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-15T14:16:40.149667+00:00",
+  "generated_at": "2026-11-16T16:21:39.112465+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [],
+  "articles": [
+    {
+      "id": "time_extension_0",
+      "product_name": "ゲームボーイ",
+      "term": "Nintendo Game Boy Japanese",
+      "article_title": "Retro Song Bird Unlocks the Music of Your Game Boy Cartridges, and Has Almost Tripled Its Kickstarter Goal in a Day",
+      "article_url": "https://www.timeextension.com/news/2026/11/retro-song-bird-unlocks-the-music-of-your-game-boy-cartridges-and-has-almost-tripled-its-kickstarter-goal-in-a-day",
+      "publisher": "Time Extension",
+      "published_at": "2026-11-16T14:00:00+00:00",
+      "signal_type": "overseas_editorial_product_mention"
+    }
+  ],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
