@@ -2,12 +2,23 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-19T16:01:13.976206+00:00",
+  "generated_at": "2026-11-20T15:43:31.629209+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [],
+  "articles": [
+    {
+      "id": "time_extension_0",
+      "product_name": "スーパーファミコン",
+      "term": "Super Famicom Japanese game",
+      "article_title": "'Dual Orb Collection' Brings Together Two Forgotten Super Famicom JRPGs In A Single Package",
+      "article_url": "https://www.timeextension.com/news/2026/11/dual-orb-collection-brings-together-two-forgotten-super-famicom-jrpgs-in-a-single-package",
+      "publisher": "Time Extension",
+      "published_at": "2026-11-20T15:00:00+00:00",
+      "signal_type": "overseas_editorial_product_mention"
+    }
+  ],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
