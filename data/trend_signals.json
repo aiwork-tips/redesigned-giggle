@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-11-20T14:08:23.134526+00:00",
+  "generated_at": "2026-11-21T13:33:48.686927+00:00",
   "source": "google_trends_rss",
   "signal_type": "google_trends_related_keyword",
   "checked_regions": [
