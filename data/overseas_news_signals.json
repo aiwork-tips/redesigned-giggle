@@ -2,12 +2,23 @@
   "schema_version": 1,
   "source": "publisher_rss",
   "signal_type": "overseas_editorial_product_mention",
-  "generated_at": "2026-11-25T17:34:58.661459+00:00",
+  "generated_at": "2026-11-26T17:16:07.742187+00:00",
   "checked_sources": [
     "Nintendo Life",
     "Time Extension"
   ],
   "failed_sources": [],
-  "articles": [],
+  "articles": [
+    {
+      "id": "time_extension_0",
+      "product_name": "ゲームボーイ",
+      "term": "Nintendo Game Boy Japanese",
+      "article_title": "Anbernic Reveals New RG 47G1 Handheld, with a Design Mimicking the Classic Pokemon Game Boy Color",
+      "article_url": "https://www.timeextension.com/news/2026/11/anbernic-reveals-new-rg-47g1-handheld-with-a-design-mimicking-the-classic-pokemon-game-boy-color",
+      "publisher": "Time Extension",
+      "published_at": "2026-11-26T11:30:00+00:00",
+      "signal_type": "overseas_editorial_product_mention"
+    }
+  ],
   "notice": "Overseas retro-game press RSS mentions; NOT sales or proof of a profitable Japanese export. Follow each original article and verify eBay sold prices."
 }
